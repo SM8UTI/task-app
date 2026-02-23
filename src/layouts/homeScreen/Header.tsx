@@ -49,13 +49,13 @@ export default function HeaderHeroScreen() {
             </View>
             <View style={{
                 flexDirection: "row",
-                backgroundColor: theme.primary[4] + "10",
+                backgroundColor: theme.white + "10",
                 paddingHorizontal: 16,
                 paddingVertical: 12,
                 borderRadius: 120,
                 gap: 4,
                 borderWidth: 1,
-                borderColor: theme.primary[4] + "40"
+                borderColor: theme.white + "20"
             }}>
                 <Flame stroke={theme.text + "10"} fill={theme.primary[4]} />
                 {/* streaks  */}

@@ -1,9 +1,24 @@
+import React, { useState, useRef } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import theme from "../../data/color-theme";
 import { taskData } from "../../data/temp-mock-data/task";
-import { Calendar1, Plus, Share2, MoreHorizontal, Link2, CircleArrowOutUpRight } from "lucide-react-native";
+import { Calendar1, Plus, Share2, MoreHorizontal, Link2, CircleArrowOutUpRight, X, Trash2, CheckCircle } from "lucide-react-native";
+import BottomSheet, { BottomSheetRef } from "../../components/BottomSheet";
+import TaskDetailsInfo from "../../components/TaskDetailsInfo";
 
 export default function TodayRecentTasks() {
+    const bottomSheetRef = useRef<BottomSheetRef>(null);
+    const [selectedTask, setSelectedTask] = useState<typeof taskData[0] | null>(null);
+
+    const openTaskSheet = (task: typeof taskData[0]) => {
+        setSelectedTask(task);
+        bottomSheetRef.current?.open();
+    };
+
+    const closeTaskSheet = () => {
+        bottomSheetRef.current?.close();
+    };
+
     // 1. Check and filter today's tasks
     const today = new Date();
     const todayTasks = taskData.filter(task => {
@@ -129,13 +144,18 @@ export default function TodayRecentTasks() {
                         const bgColor = taskColors[index % taskColors.length];
 
                         return (
-                            <View key={task.id} style={{
-                                backgroundColor: bgColor,
-                                borderRadius: 40,
-                                padding: 12,
-                                flexDirection: "row",
-                                alignItems: "center"
-                            }}>
+                            <TouchableOpacity
+                                key={task.id}
+                                activeOpacity={0.9}
+                                onPress={() => openTaskSheet(task)}
+                                style={{
+                                    backgroundColor: bgColor,
+                                    borderRadius: 40,
+                                    padding: 12,
+                                    flexDirection: "row",
+                                    alignItems: "center"
+                                }}
+                            >
                                 {/* Left Black Circle  */}
                                 <View style={{
                                     backgroundColor: theme.background,
@@ -181,40 +201,41 @@ export default function TodayRecentTasks() {
                                         {task.description}
                                     </Text>
                                 </View>
-
-                                {/* Right Side Actions */}
-                                <View style={{
-                                    flexDirection: "row",
-                                    gap: 8,
-                                    marginRight: 4
-                                }}>
-                                    <TouchableOpacity style={{
-                                        width: 44,
-                                        height: 44,
-                                        borderRadius: 22,
-                                        borderWidth: 1,
-                                        borderColor: theme.background + "20",
-                                        justifyContent: "center",
-                                        alignItems: "center"
-                                    }}>
-                                        <MoreHorizontal color={theme.background} size={20} />
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={{
-                                        width: 44,
-                                        height: 44,
-                                        borderRadius: 22,
-                                        backgroundColor: theme.background,
-                                        justifyContent: "center",
-                                        alignItems: "center"
-                                    }}>
-                                        <Link2 color={theme.text} size={20} />
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
+                            </TouchableOpacity>
                         );
                     })
                 }
             </View>
+
+            <BottomSheet
+                ref={bottomSheetRef}
+                height={350}
+                animationDuration={300}
+                closeOnDragDown={true}
+                closeOnPressMask={true}
+                customStyles={{
+                    container: {
+                        backgroundColor: theme.white,
+                        borderTopLeftRadius: 36,
+                        borderTopRightRadius: 36,
+                    },
+                    draggableIcon: {
+                        backgroundColor: theme.background + "20",
+                        width: 56,
+                        height: 6,
+                        borderRadius: 3,
+                    },
+                }}
+            >
+                {selectedTask && (
+                    <TaskDetailsInfo
+                        task={selectedTask}
+                        onClose={closeTaskSheet}
+                        onComplete={() => console.log("Complete Task clicked")}
+                        onDelete={() => console.log("Delete Task clicked")}
+                    />
+                )}
+            </BottomSheet>
         </View>
     )
 }

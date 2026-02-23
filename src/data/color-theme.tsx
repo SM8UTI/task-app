@@ -7,7 +7,7 @@ const color_theme = {
         3: "#BBE7EF",
         4: "#ff8c6fff"
     },
-    white: "#fff",
+    white: "#ffffff",
     fonts: {
         100: "GoogleSansFlex_24pt-Thin",
         200: "GoogleSansFlex_24pt-ExtraLight",
