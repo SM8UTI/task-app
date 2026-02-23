@@ -28,14 +28,13 @@
 	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
-	  <!-- Do not change NSAllowsArbitraryLoads to true, or you will risk app rejection! -->
 		<key>NSAllowsArbitraryLoads</key>
 		<false/>
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -55,5 +54,53 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>GoogleSansFlex_24pt-ExtraLight.ttf</string>
+		<string>GoogleSansFlex_72pt-Thin.ttf</string>
+		<string>GoogleSansFlex_9pt-Medium.ttf</string>
+		<string>GoogleSansFlex_36pt-ExtraBold.ttf</string>
+		<string>GoogleSansFlex_36pt-Thin.ttf</string>
+		<string>GoogleSansFlex_36pt-Bold.ttf</string>
+		<string>GoogleSansFlex_72pt-Black.ttf</string>
+		<string>GoogleSansFlex_120pt-Light.ttf</string>
+		<string>GoogleSansFlex_9pt-Light.ttf</string>
+		<string>GoogleSansFlex_72pt-Regular.ttf</string>
+		<string>GoogleSansFlex_72pt-Bold.ttf</string>
+		<string>GoogleSansFlex_120pt-Bold.ttf</string>
+		<string>GoogleSansFlex_120pt-ExtraBold.ttf</string>
+		<string>GoogleSansFlex_9pt-ExtraBold.ttf</string>
+		<string>GoogleSansFlex_72pt-Medium.ttf</string>
+		<string>GoogleSansFlex_24pt-Light.ttf</string>
+		<string>GoogleSansFlex_36pt-Black.ttf</string>
+		<string>GoogleSansFlex_36pt-Regular.ttf</string>
+		<string>GoogleSansFlex_24pt-SemiBold.ttf</string>
+		<string>GoogleSansFlex_120pt-Thin.ttf</string>
+		<string>GoogleSansFlex_36pt-SemiBold.ttf</string>
+		<string>GoogleSansFlex_120pt-Medium.ttf</string>
+		<string>GoogleSansFlex_120pt-ExtraLight.ttf</string>
+		<string>GoogleSansFlex_24pt-Black.ttf</string>
+		<string>GoogleSansFlex_24pt-Regular.ttf</string>
+		<string>GoogleSansFlex_36pt-Light.ttf</string>
+		<string>GoogleSansFlex_36pt-Medium.ttf</string>
+		<string>GoogleSansFlex_9pt-ExtraLight.ttf</string>
+		<string>GoogleSansFlex_24pt-Medium.ttf</string>
+		<string>GoogleSansFlex_24pt-ExtraBold.ttf</string>
+		<string>GoogleSansFlex_9pt-SemiBold.ttf</string>
+		<string>GoogleSansFlex_9pt-Regular.ttf</string>
+		<string>GoogleSansFlex_120pt-Regular.ttf</string>
+		<string>GoogleSansFlex_72pt-ExtraBold.ttf</string>
+		<string>GoogleSansFlex_72pt-SemiBold.ttf</string>
+		<string>GoogleSansFlex_72pt-ExtraLight.ttf</string>
+		<string>GoogleSansFlex_36pt-ExtraLight.ttf</string>
+		<string>GoogleSansFlex_120pt-Black.ttf</string>
+		<string>GoogleSansFlex_9pt-Bold.ttf</string>
+		<string>GoogleSansFlex_72pt-Light.ttf</string>
+		<string>GoogleSansFlex_24pt-Bold.ttf</string>
+		<string>GoogleSansFlex_9pt-Black.ttf</string>
+		<string>GoogleSansFlex_24pt-Thin.ttf</string>
+		<string>GoogleSansFlex_120pt-SemiBold.ttf</string>
+		<string>GoogleSansFlex_9pt-Thin.ttf</string>
+	</array>
 </dict>
 </plist>
