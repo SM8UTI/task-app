@@ -28,5 +28,20 @@ export const taskData = [
             "design",
             "mobile"
         ]
+    },
+    {
+        id: 3,
+        title: "Task 3 - Web Design",
+        description: "Design a new website for the company",
+        isCompleted: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        priority: "high",
+        category: "work",
+        dueDate: new Date(),
+        tag: [
+            "design",
+            "web"
+        ]
     }
 ]

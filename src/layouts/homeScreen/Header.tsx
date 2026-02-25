@@ -1,8 +1,9 @@
+import React from "react";
 import { Text, View } from "react-native";
 import theme from "../../data/color-theme";
 import { Flame } from "lucide-react-native";
 
-export default function HeaderHeroScreen() {
+function HeaderHeroScreen() {
 
     const Day = () => {
         const date = new Date();
@@ -70,3 +71,5 @@ export default function HeaderHeroScreen() {
         </View>
     )
 }
+
+export default React.memo(HeaderHeroScreen);

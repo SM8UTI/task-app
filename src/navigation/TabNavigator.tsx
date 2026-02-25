@@ -7,6 +7,11 @@ import { LayoutDashboard, ListTodo } from "lucide-react-native";
 
 const Tab = createBottomTabNavigator();
 
+export const routeNames = {
+    home: "Home",
+    tasks: "Tasks"
+}
+
 export default function TabNavigator() {
     return (
         <Tab.Navigator screenOptions={{
@@ -16,25 +21,25 @@ export default function TabNavigator() {
             tabBarStyle: {
                 backgroundColor: theme.background,
                 borderColor: theme.text + "20",
-                height: 100,
-                paddingTop: 8
+                height: 80,
+                paddingTop: 8,
             },
             tabBarLabelStyle: {
                 fontFamily: theme.fonts[500],
                 fontSize: 12,
-                marginTop: 8
+                marginTop: 2
             }
         }}>
             <Tab.Screen options={{
                 tabBarIcon: ({ focused }) => (
-                    <LayoutDashboard color={focused ? theme.text : theme.text + "60"} size={24} />
+                    <LayoutDashboard color={focused ? theme.text : theme.text + "60"} size={22} />
                 )
-            }} name="Home" component={HomeScreen} />
+            }} name={routeNames.home} component={HomeScreen} />
             <Tab.Screen options={{
                 tabBarIcon: ({ focused }) => (
-                    <ListTodo color={focused ? theme.text : theme.text + "60"} size={24} />
+                    <ListTodo color={focused ? theme.text : theme.text + "60"} size={22} />
                 )
-            }} name="Task" component={TaskScreen} />
+            }} name={routeNames.tasks} component={TaskScreen} />
         </Tab.Navigator>
     )
 }

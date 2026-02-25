@@ -8,6 +8,9 @@ const color_theme = {
         4: "#ff8c6fff"
     },
     white: "#ffffff",
+    error: "#ffa6a6",
+    errorDark: "#5b0000",
+    success: "#004b00",
     fonts: {
         100: "GoogleSansFlex_24pt-Thin",
         200: "GoogleSansFlex_24pt-ExtraLight",

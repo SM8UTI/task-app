@@ -1,8 +1,9 @@
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import { X, CheckCircle, Trash2 } from "lucide-react-native";
+import { X, CheckCircle, Trash2, Calendar1 } from "lucide-react-native";
 import theme from "../data/color-theme";
 import { taskData } from "../data/temp-mock-data/task";
+import AnimatedIconButton from "./AnimatedIconButton";
 
 type TaskProps = {
     task: typeof taskData[0];
@@ -12,93 +13,103 @@ type TaskProps = {
 };
 
 export default function TaskDetailsInfo({ task, onClose, onComplete, onDelete }: TaskProps) {
+    const tDate = new Date(task.dueDate);
+    const timeStr = tDate.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
+
     return (
-        <View style={{ paddingHorizontal: 24, paddingBottom: 24, paddingTop: 12 }}>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
-                <Text style={{
-                    fontFamily: theme.fonts[700],
-                    fontSize: 24,
-                    color: theme.background,
-                    flex: 1,
-                    lineHeight: 32
-                }} numberOfLines={2}>
-                    {task.title}
-                </Text>
-                <TouchableOpacity
-                    style={{
-                        backgroundColor: theme.background + "08",
-                        padding: 10,
-                        borderRadius: 100,
-                        marginLeft: 16
-                    }}
-                    onPress={onClose}
-                >
-                    <X size={20} color={theme.background} />
-                </TouchableOpacity>
+        <View style={{ paddingHorizontal: 24, paddingBottom: 8, paddingTop: 20 }}>
+            {/* Top Row: Date Pill & Close Button */}
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+                <View style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 8
+                }}>
+                    <Calendar1 size={16} color={theme.background + "80"} />
+                    <Text style={{
+                        fontFamily: theme.fonts[500],
+                        fontSize: 14,
+                        color: theme.background + "80",
+                    }}>
+                        Today, {timeStr}
+                    </Text>
+                </View>
             </View>
 
+            {/* Title & Description */}
             <Text style={{
                 fontFamily: theme.fonts[500],
                 fontSize: 16,
-                color: theme.background + "80",
-                marginBottom: 20,
-                lineHeight: 24
+                color: theme.background + "90",
+                marginBottom: 2,
+                lineHeight: 40
+            }}>
+                {task.title}
+            </Text>
+
+            <Text style={{
+                fontFamily: theme.fonts[700],
+                fontSize: 24,
+                color: theme.background,
+                marginBottom: 24,
+                lineHeight: 36
             }}>
                 {task.description}
             </Text>
 
-            <View style={{ flexDirection: "row", gap: 10, marginBottom: 36, flexWrap: "wrap" }}>
+            {/* Tags array */}
+            <View style={{ flexDirection: "row", gap: 8, marginBottom: 40, flexWrap: "wrap", borderTopWidth: 1, borderColor: theme.background + "10", paddingTop: 20 }}>
                 {task.tag?.map((tag: string, idx: number) => (
-                    <View key={idx} style={{
-                        backgroundColor: theme.background + "08",
-                        paddingHorizontal: 16,
-                        paddingVertical: 8,
-                        borderRadius: 100
+                    <Text key={idx} style={{
+                        fontFamily: theme.fonts[500],
+                        fontSize: 15,
+                        color: theme.background + "80",
+                        textTransform: "capitalize"
                     }}>
-                        <Text style={{
-                            fontFamily: theme.fonts[600],
-                            fontSize: 14,
-                            color: theme.background
-                        }}>#{tag}</Text>
-                    </View>
+                        #{tag}
+                    </Text>
                 ))}
             </View>
 
-            <View style={{ flexDirection: "row", gap: 16 }}>
-                <TouchableOpacity
-                    style={{
-                        flex: 1,
-                        height: 64,
-                        borderRadius: 32,
-                        backgroundColor: theme.background,
-                        flexDirection: "row",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: 12
-                    }}
-                    onPress={onComplete}
-                >
-                    <CheckCircle color={theme.text} size={24} />
-                    <Text style={{
-                        fontFamily: theme.fonts[600],
-                        fontSize: 18,
-                        color: theme.text
-                    }}>Complete Task</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
+            {/* Bottom Action Buttons */}
+            <View style={{ flexDirection: "row", gap: 16, borderTopWidth: 1, borderColor: theme.background + "10", paddingTop: 20 }}>
+                <View style={{ flex: 1 }}>
+                    <AnimatedIconButton
+                        style={{
+                            width: "100%",
+                            height: 64,
+                            borderRadius: 120,
+                            backgroundColor: theme.success,
+                            flexDirection: "row",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            gap: 12
+                        }}
+                        onPress={onComplete}
+                    >
+                        <CheckCircle color={theme.white} size={18} />
+                        <Text style={{
+                            fontFamily: theme.fonts[400],
+                            fontSize: 16,
+                            color: theme.white
+                        }}>Complete Task</Text>
+                    </AnimatedIconButton>
+                </View>
+                <AnimatedIconButton
                     style={{
                         width: 64,
                         height: 64,
                         borderRadius: 32,
-                        backgroundColor: "#FFF0F0",
                         justifyContent: "center",
-                        alignItems: "center"
+                        alignItems: "center",
+                        borderWidth: 1,
+                        borderColor: theme.errorDark + "20",
+                        backgroundColor: theme.error + "20"
                     }}
                     onPress={onDelete}
                 >
-                    <Trash2 color="#FF4D4D" size={24} />
-                </TouchableOpacity>
+                    <Trash2 color={theme.error} size={24} />
+                </AnimatedIconButton>
             </View>
         </View>
     );
