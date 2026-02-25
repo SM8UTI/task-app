@@ -23,7 +23,7 @@ const color_theme = {
         900: "GoogleSansFlex_24pt-Black",
     },
     padding: {
-        paddingMainX: 24
+        paddingMainX: 16
     },
     border: {
         radius: {

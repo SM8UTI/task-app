@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import React, { useState, useCallback } from "react";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
     Text,
     View,
@@ -12,9 +13,9 @@ import {
     PanResponder,
 } from "react-native";
 import theme from "../../data/color-theme";
-import { taskData } from "../../data/temp-mock-data/task";
 import { Calendar1, Plus, CircleArrowOutUpRight } from "lucide-react-native";
 import TaskDetailsInfo from "../../components/TaskDetailsInfo";
+import AddTaskBottomSheet, { NewTaskData } from "../../components/AddTaskBottomSheet";
 import AnimatedIconButton from "../../components/AnimatedIconButton";
 import TaskCard from "../../components/TaskCard";
 import { routeNames } from "../../navigation/TabNavigator";
@@ -22,12 +23,92 @@ import { routeNames } from "../../navigation/TabNavigator";
 
 function TodayRecentTasks() {
     const navigation = useNavigation<any>();
-    const [selectedTask, setSelectedTask] = useState<typeof taskData[0] | null>(null);
+    const [tasks, setTasks] = useState<any[]>([]);
+    const [selectedTask, setSelectedTask] = useState<any | null>(null);
     const [sheetVisible, setSheetVisible] = useState(false);
+    const [isAddSheetVisible, setAddSheetVisible] = useState(false);
 
     const slideAnim = React.useRef(new Animated.Value(0)).current;
 
-    const openTaskSheet = (task: typeof taskData[0]) => {
+    const saveNewTask = async (data: NewTaskData) => {
+        const newTask = {
+            id: Date.now(),
+            title: data.title,
+            description: data.description,
+            isCompleted: false,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            priority: data.priority,
+            category: "work",
+            status: data.status,
+            dueDate: data.dueDate,
+            tag: data.tag
+        };
+
+        const updatedTasks = [newTask, ...tasks];
+        // Sort by newest first
+        updatedTasks.sort((a: any, b: any) => b.createdAt.getTime() - a.createdAt.getTime());
+        setTasks(updatedTasks);
+        setAddSheetVisible(false);
+
+        try {
+            await AsyncStorage.setItem("@myapp_tasks_data", JSON.stringify(updatedTasks));
+        } catch (error) {
+            console.error("Failed to save task", error);
+        }
+    };
+
+    useFocusEffect(
+        useCallback(() => {
+            loadTasks();
+        }, [])
+    );
+
+    const loadTasks = async () => {
+        try {
+            const storedTasks = await AsyncStorage.getItem("@myapp_tasks_data");
+            if (storedTasks) {
+                const parsed = JSON.parse(storedTasks);
+                const formattedTasks = parsed.map((t: any) => ({
+                    ...t,
+                    dueDate: new Date(t.dueDate),
+                    createdAt: new Date(t.createdAt),
+                    updatedAt: new Date(t.updatedAt)
+                }));
+                formattedTasks.sort((a: any, b: any) => b.createdAt.getTime() - a.createdAt.getTime());
+                setTasks(formattedTasks);
+            } else {
+                setTasks([]);
+            }
+        } catch (error) {
+            console.error("Failed to load tasks", error);
+            setTasks([]);
+        }
+    };
+
+    const toggleTaskComplete = async (taskId: number) => {
+        const updatedTasks = tasks.map(t => t.id === taskId ? { ...t, isCompleted: true, status: "completed" } : t);
+        setTasks(updatedTasks);
+        try {
+            await AsyncStorage.setItem("@myapp_tasks_data", JSON.stringify(updatedTasks));
+            if (selectedTask?.id === taskId) {
+                closeTaskSheet();
+            }
+        } catch (error) { }
+    };
+
+    const deleteTask = async (taskId: number) => {
+        const filteredTasks = tasks.filter(t => t.id !== taskId);
+        setTasks(filteredTasks);
+        try {
+            await AsyncStorage.setItem("@myapp_tasks_data", JSON.stringify(filteredTasks));
+            if (selectedTask?.id === taskId) {
+                closeTaskSheet();
+            }
+        } catch (error) { }
+    };
+
+    const openTaskSheet = (task: any) => {
         setSelectedTask(task);
         setSheetVisible(true);
         Animated.spring(slideAnim, {
@@ -73,8 +154,9 @@ function TodayRecentTasks() {
     ).current;
 
     // 1. Filter today's tasks
+    const activeTasks = tasks.filter(t => !t.isCompleted);
     const today = new Date();
-    const todayTasks = taskData.filter(task => {
+    const todayTasks = activeTasks.filter(task => {
         const taskDate = new Date(task.dueDate);
         return (
             taskDate.getDate() === today.getDate() &&
@@ -106,10 +188,12 @@ function TodayRecentTasks() {
                         </Text>
                     </View>
                     <View style={{ flexDirection: "row", gap: 8 }}>
-                        <AnimatedIconButton style={{
-                            backgroundColor: theme.background, borderRadius: 120,
-                            height: 48, width: 48, justifyContent: "center", alignItems: "center"
-                        }}>
+                        <AnimatedIconButton
+                            onPress={() => setAddSheetVisible(true)}
+                            style={{
+                                backgroundColor: theme.background, borderRadius: 120,
+                                height: 48, width: 48, justifyContent: "center", alignItems: "center"
+                            }}>
                             <Plus stroke={theme.text} size={24} />
                         </AnimatedIconButton>
                         <AnimatedIconButton
@@ -150,16 +234,22 @@ function TodayRecentTasks() {
 
             {/* ── Task List ── */}
             <View style={{ flexDirection: "column", gap: 12, marginTop: 12 }}>
-                {taskData.map((task, index) => (
-                    <TaskCard
-                        key={task.id}
-                        task={task}
-                        bgColor={taskColors[index % taskColors.length]}
-                        onPress={() => openTaskSheet(task)}
-                        onComplete={() => console.log("Task completed via swipe:", task.title)}
-                        onDelete={() => console.log("Task deleted via swipe:", task.title)}
-                    />
-                ))}
+                {activeTasks.length === 0 ? (
+                    <Text style={{ fontFamily: theme.fonts[500], fontSize: 16, color: theme.background + "60", textAlign: "center", marginTop: 20 }}>
+                        No active tasks for today.
+                    </Text>
+                ) : (
+                    activeTasks.map((task, index) => (
+                        <TaskCard
+                            key={task.id}
+                            task={task}
+                            bgColor={taskColors[index % taskColors.length]}
+                            onPress={() => openTaskSheet(task)}
+                            onComplete={() => toggleTaskComplete(task.id)}
+                            onDelete={() => deleteTask(task.id)}
+                        />
+                    ))
+                )}
             </View>
 
             {/* ── Bottom Sheet Modal ── */}
@@ -209,14 +299,8 @@ function TodayRecentTasks() {
                             <TaskDetailsInfo
                                 task={selectedTask}
                                 onClose={closeTaskSheet}
-                                onComplete={() => {
-                                    console.log("Complete:", selectedTask.title);
-                                    closeTaskSheet();
-                                }}
-                                onDelete={() => {
-                                    console.log("Delete:", selectedTask.title);
-                                    closeTaskSheet();
-                                }}
+                                onComplete={() => toggleTaskComplete(selectedTask.id)}
+                                onDelete={() => deleteTask(selectedTask.id)}
                             />
                         )}
 
@@ -224,6 +308,13 @@ function TodayRecentTasks() {
                     </Animated.View>
                 </KeyboardAvoidingView>
             </Modal>
+
+            {/* ── Add Task Bottom Sheet Modal ── */}
+            <AddTaskBottomSheet
+                visible={isAddSheetVisible}
+                onClose={() => setAddSheetVisible(false)}
+                onSave={saveNewTask}
+            />
         </View>
     );
 }
