@@ -168,6 +168,13 @@ function TodayRecentTasks() {
     const displayMonth = today.toLocaleDateString("en-US", { month: "short" });
     const displayDate = today.getDate();
 
+    const highPrioCount = todayTasks.filter(t => t.priority === "high").length;
+    const mediumPrioCount = todayTasks.filter(t => t.priority === "medium").length;
+
+    let dominantPriorityText = "Low";
+    if (highPrioCount > 0) dominantPriorityText = "High";
+    else if (mediumPrioCount > 0) dominantPriorityText = "Medium";
+
     // 2. Cycle colors
     const taskColors = [theme.primary[1], theme.primary[3], theme.primary[4]];
 
@@ -218,7 +225,9 @@ function TodayRecentTasks() {
                             {String(todayTasks.length).padStart(2, "0")}
                         </Text>{"\n"}
                         tasks{" "}
-                        <Text style={{ color: theme.background, fontFamily: theme.fonts[600] }}>High ~</Text>{"\n"}
+                        <Text style={{ color: theme.background, fontFamily: theme.fonts[600], textTransform: "capitalize" }}>
+                            {dominantPriorityText} ~
+                        </Text>{"\n"}
                         for today
                     </Text>
                 </View>
@@ -245,7 +254,7 @@ function TodayRecentTasks() {
                             task={task}
                             bgColor={taskColors[index % taskColors.length]}
                             onPress={() => openTaskSheet(task)}
-                            onComplete={() => toggleTaskComplete(task.id)}
+                            onAdvanceStatus={() => toggleTaskComplete(task.id)}
                             onDelete={() => deleteTask(task.id)}
                         />
                     ))
@@ -299,7 +308,7 @@ function TodayRecentTasks() {
                             <TaskDetailsInfo
                                 task={selectedTask}
                                 onClose={closeTaskSheet}
-                                onComplete={() => toggleTaskComplete(selectedTask.id)}
+                                onAdvanceStatus={() => toggleTaskComplete(selectedTask.id)}
                                 onDelete={() => deleteTask(selectedTask.id)}
                             />
                         )}

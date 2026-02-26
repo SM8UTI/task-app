@@ -26,6 +26,7 @@ export default function HeaderTaskScreen({
     return (
         <View style={{
             paddingHorizontal: theme.padding.paddingMainX,
+            paddingTop: 12
         }}>
             <View style={{
                 flexDirection: "row",

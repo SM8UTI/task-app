@@ -1,111 +1,136 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import { X, CheckCircle, Trash2, Calendar1 } from "lucide-react-native";
+import { View, Text, StyleSheet } from "react-native";
+import {
+    CalendarClock,
+    Calendar1,
+    CheckCircle,
+    ChevronsRight,
+    Trash2,
+} from "lucide-react-native";
 import theme from "../data/color-theme";
-import { taskData } from "../data/temp-mock-data/task";
 import AnimatedIconButton from "./AnimatedIconButton";
+import { Task, PRIORITY_CONFIG } from "./TaskCard";
 
+// ─── Status cycling helpers ────────────────────────────────────────────────
+const STATUS_ORDER = ["to-do", "in-progress", "completed"] as const;
+type TaskStatus = (typeof STATUS_ORDER)[number];
+
+const getTomorrow = (): Date => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    d.setHours(9, 0, 0, 0);
+    return d;
+};
+
+type AdvanceCfg = { label: string; color: string; Icon: React.ReactNode };
+
+const getAdvanceCfg = (status: string): AdvanceCfg => {
+    if (status === "to-do")
+        return {
+            label: "Move to In Progress",
+            color: theme.success,
+            Icon: <ChevronsRight color={theme.white} size={18} />,
+        };
+    if (status === "in-progress")
+        return {
+            label: "Mark as Done",
+            color: theme.success,
+            Icon: <CheckCircle color={theme.white} size={18} />,
+        };
+    // completed → reschedule to tomorrow
+    return {
+        label: "Reschedule for Tomorrow",
+        color: "#4A7FD6",
+        Icon: <CalendarClock color={theme.white} size={18} />,
+    };
+};
+
+
+// ─── Date label ─────────────────────────────────────────────────────────────
+const isSameDay = (a: Date, b: Date) => a.toDateString() === b.toDateString();
+
+const getDateLabel = (dueDate: Date | string): string => {
+    const d = new Date(dueDate);
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(now.getDate() + 1);
+    if (isSameDay(d, now)) return "Today";
+    if (isSameDay(d, tomorrow)) return "Tomorrow";
+    return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+};
+
+// ─── Props ──────────────────────────────────────────────────────────────────
 type TaskProps = {
-    task: typeof taskData[0];
+    task: Task;
     onClose: () => void;
-    onComplete?: () => void;
+    /** Cycles status: to-do → in-progress → completed → to-do (tomorrow) */
+    onAdvanceStatus?: () => void;
     onDelete?: () => void;
 };
 
-export default function TaskDetailsInfo({ task, onClose, onComplete, onDelete }: TaskProps) {
+// ─── Component ──────────────────────────────────────────────────────────────
+export default function TaskDetailsInfo({ task, onClose, onAdvanceStatus, onDelete }: TaskProps) {
     const tDate = new Date(task.dueDate);
-    const timeStr = tDate.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
+    const timeStr = tDate.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+    });
+    const dateLabel = getDateLabel(task.dueDate);
+
+    const advanceCfg = getAdvanceCfg(task.status);
+    const priorityCfg = PRIORITY_CONFIG[task.priority] ?? null;
 
     return (
-        <View style={{ paddingHorizontal: 24, paddingBottom: 8, paddingTop: 20 }}>
-            {/* Top Row: Date Pill & Close Button */}
-            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-                <View style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 8
-                }}>
-                    <Calendar1 size={16} color={theme.background + "80"} />
-                    <Text style={{
-                        fontFamily: theme.fonts[500],
-                        fontSize: 14,
-                        color: theme.background + "80",
-                    }}>
-                        Today, {timeStr}
+        <View style={styles.container}>
+            {/* ── Top row: date + priority ──────────────────── */}
+            <View style={styles.topRow}>
+                <View style={styles.datePill}>
+                    <Calendar1 size={14} color={theme.background + "80"} />
+                    <Text style={styles.datePillText}>
+                        {dateLabel}, {timeStr}
                     </Text>
                 </View>
+
+                {priorityCfg && (
+                    <View style={[styles.priorityPill, { backgroundColor: priorityCfg.bg }]}>
+                        <View style={[styles.priorityDot, { backgroundColor: priorityCfg.dot }]} />
+                        <Text style={[styles.priorityLabel, { color: priorityCfg.dot }]}>
+                            {priorityCfg.label}
+                        </Text>
+                    </View>
+                )}
             </View>
 
-            {/* Title & Description */}
-            <Text style={{
-                fontFamily: theme.fonts[500],
-                fontSize: 16,
-                color: theme.background + "90",
-                marginBottom: 2,
-                lineHeight: 40
-            }}>
-                {task.title}
-            </Text>
+            {/* ── Title & Description ───────────────────────── */}
+            <Text style={styles.title}>{task.title}</Text>
+            <Text style={styles.description}>{task.description}</Text>
 
-            <Text style={{
-                fontFamily: theme.fonts[700],
-                fontSize: 24,
-                color: theme.background,
-                marginBottom: 24,
-                lineHeight: 36
-            }}>
-                {task.description}
-            </Text>
+            {/* ── Tags ─────────────────────────────────────── */}
+            {task.tag && task.tag.length > 0 && (
+                <View style={styles.tagRow}>
+                    {task.tag.map((tag: string, idx: number) => (
+                        <Text key={idx} style={styles.tagText}>#{tag}</Text>
+                    ))}
+                </View>
+            )}
 
-            {/* Tags array */}
-            <View style={{ flexDirection: "row", gap: 8, marginBottom: 40, flexWrap: "wrap", borderTopWidth: 1, borderColor: theme.background + "10", paddingTop: 20 }}>
-                {task.tag?.map((tag: string, idx: number) => (
-                    <Text key={idx} style={{
-                        fontFamily: theme.fonts[500],
-                        fontSize: 15,
-                        color: theme.background + "80",
-                        textTransform: "capitalize"
-                    }}>
-                        #{tag}
-                    </Text>
-                ))}
-            </View>
-
-            {/* Bottom Action Buttons */}
-            <View style={{ flexDirection: "row", gap: 16, borderTopWidth: 1, borderColor: theme.background + "10", paddingTop: 20 }}>
+            {/* ── Action buttons ───────────────────────────── */}
+            <View style={styles.actionRow}>
+                {/* Advance status button */}
                 <View style={{ flex: 1 }}>
                     <AnimatedIconButton
-                        style={{
-                            width: "100%",
-                            height: 64,
-                            borderRadius: 120,
-                            backgroundColor: theme.success,
-                            flexDirection: "row",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            gap: 12
-                        }}
-                        onPress={onComplete}
+                        style={[styles.advanceBtn, { backgroundColor: advanceCfg.color }]}
+                        onPress={onAdvanceStatus}
                     >
-                        <CheckCircle color={theme.white} size={18} />
-                        <Text style={{
-                            fontFamily: theme.fonts[400],
-                            fontSize: 16,
-                            color: theme.white
-                        }}>Complete Task</Text>
+                        {advanceCfg.Icon}
+                        <Text style={styles.advanceBtnLabel}>{advanceCfg.label}</Text>
                     </AnimatedIconButton>
                 </View>
+
+                {/* Delete button */}
                 <AnimatedIconButton
-                    style={{
-                        width: 64,
-                        height: 64,
-                        borderRadius: 32,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        borderWidth: 1,
-                        borderColor: theme.errorDark + "20",
-                        backgroundColor: theme.error + "20"
-                    }}
+                    style={styles.deleteBtn}
                     onPress={onDelete}
                 >
                     <Trash2 color={theme.error} size={24} />
@@ -114,3 +139,107 @@ export default function TaskDetailsInfo({ task, onClose, onComplete, onDelete }:
         </View>
     );
 }
+
+// ─── Styles ─────────────────────────────────────────────────────────────────
+const styles = StyleSheet.create({
+    container: {
+        paddingHorizontal: 24,
+        paddingBottom: 8,
+        paddingTop: 20,
+    },
+    topRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        marginBottom: 20,
+        flexWrap: "wrap",
+        gap: 8,
+    },
+    datePill: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 6,
+    },
+    datePillText: {
+        fontFamily: theme.fonts[500],
+        fontSize: 14,
+        color: theme.background + "88",
+    },
+    priorityPill: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 5,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        borderRadius: 20,
+    },
+    priorityDot: {
+        width: 7,
+        height: 7,
+        borderRadius: 4,
+    },
+    priorityLabel: {
+        fontFamily: theme.fonts[600],
+        fontSize: 12,
+    },
+    title: {
+        fontFamily: theme.fonts[500],
+        fontSize: 16,
+        color: theme.background + "90",
+        marginBottom: 2,
+        lineHeight: 40,
+    },
+    description: {
+        fontFamily: theme.fonts[700],
+        fontSize: 24,
+        color: theme.background,
+        marginBottom: 20,
+        lineHeight: 36,
+    },
+    tagRow: {
+        flexDirection: "row",
+        gap: 8,
+        marginBottom: 24,
+        flexWrap: "wrap",
+        borderTopWidth: 1,
+        borderColor: theme.background + "10",
+        paddingTop: 16,
+    },
+    tagText: {
+        fontFamily: theme.fonts[500],
+        fontSize: 15,
+        color: theme.background + "80",
+        textTransform: "capitalize",
+    },
+    actionRow: {
+        flexDirection: "row",
+        gap: 12,
+        borderTopWidth: 1,
+        borderColor: theme.background + "10",
+        paddingTop: 20,
+    },
+    advanceBtn: {
+        width: "100%",
+        height: 64,
+        borderRadius: 120,
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        gap: 10,
+    },
+    advanceBtnLabel: {
+        fontFamily: theme.fonts[500],
+        fontSize: 15,
+        color: theme.white,
+    },
+    deleteBtn: {
+        width: 64,
+        height: 64,
+        borderRadius: 32,
+        justifyContent: "center",
+        alignItems: "center",
+        borderWidth: 1,
+        borderColor: theme.error + "30",
+        backgroundColor: theme.error + "18",
+    },
+});
