@@ -1,4 +1,4 @@
-# MyAppPractice — Task Manager
+# TaskFlow — Task Manager
 
 > A premium **React Native** task management app with daily streak tracking, priority-based task filtering, swipe gestures, and a calendar heatmap view. Built with a dark-first design system and zero backend dependency.
 
@@ -177,8 +177,8 @@ src/
 ### 1 · Clone & Install
 
 ```bash
-git clone https://github.com/SM8UTI/MyAppPractice.git
-cd MyAppPractice
+git clone https://github.com/SM8UTI/TaskFlow.git
+cd TaskFlow
 npm install
 ```
 
@@ -239,7 +239,7 @@ MIT License — free to use, modify, and distribute.
 
 ## 👨‍💻 Author
 
-**SM8UTI**
+**Smruti Ranjan Nayak**
 
 - 🌐 Website: [sm8uti.com](https://sm8uti.com)
 - 🐙 GitHub: [@SM8UTI](https://github.com/SM8UTI)
@@ -249,5 +249,5 @@ MIT License — free to use, modify, and distribute.
 <br />
 
 <p align="center">
-  Copyright © 2026 <a href="https://sm8uti.com">SM8UTI</a>. All rights reserved.
+  Copyright © 2026 <a href="https://sm8uti.com">Smruti Ranjan Nayak</a>. All rights reserved.
 </p>

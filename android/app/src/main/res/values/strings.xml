@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">MyAppPractice</string>
+    <string name="app_name">TaskFlow</string>
+    <string name="app_author">Smruti Ranjan Nayak</string>
 </resources>
