@@ -1,8 +1,22 @@
-# TaskFlow — Task Manager
+<p align="center">
+  <img src="android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" alt="TaskFlow App Icon" width="120" height="120" style="border-radius: 24px;"/>
+</p>
 
-> A premium **React Native** task management app with daily streak tracking, priority-based task filtering, swipe gestures, and a calendar heatmap view. Built with a dark-first design system and zero backend dependency.
+<h1 align="center">TaskFlow</h1>
 
-<br />
+<p align="center">
+  <strong>A premium React Native task manager</strong><br/>
+  Daily streak tracking · Priority filtering · Swipe gestures · Calendar heatmap
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/React%20Native-0.84-61DAFB?logo=react&logoColor=white&style=flat-square" alt="React Native"/>
+  <img src="https://img.shields.io/badge/Platform-Android%20%7C%20iOS-lightgrey?style=flat-square" alt="Platform"/>
+  <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License"/>
+  <img src="https://img.shields.io/badge/Author-Smruti%20Ranjan%20Nayak-orange?style=flat-square" alt="Author"/>
+</p>
+
+<br/>
 
 ## 📱 Screens Overview
 
