@@ -1,16 +1,17 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { View } from "react-native";
 import HomeScreen from "../screens/HomeScreen";
 import TaskScreen from "../screens/TaskScreen";
+import CalendarScreen from "../screens/CalendarScreen";
 import theme from "../data/color-theme";
-import { LayoutDashboard, ListTodo } from "lucide-react-native";
+import { CalendarDays, LayoutDashboard, ListTodo } from "lucide-react-native";
 
 const Tab = createBottomTabNavigator();
 
 export const routeNames = {
     home: "Home",
-    tasks: "Tasks"
-}
+    tasks: "Tasks",
+    calendar: "Calendar",
+};
 
 export default function TabNavigator() {
     return (
@@ -27,19 +28,37 @@ export default function TabNavigator() {
             tabBarLabelStyle: {
                 fontFamily: theme.fonts[500],
                 fontSize: 12,
-                marginTop: 2
-            }
+                marginTop: 2,
+            },
         }}>
-            <Tab.Screen options={{
-                tabBarIcon: ({ focused }) => (
-                    <LayoutDashboard color={focused ? theme.text : theme.text + "60"} size={22} />
-                )
-            }} name={routeNames.home} component={HomeScreen} />
-            <Tab.Screen options={{
-                tabBarIcon: ({ focused }) => (
-                    <ListTodo color={focused ? theme.text : theme.text + "60"} size={22} />
-                )
-            }} name={routeNames.tasks} component={TaskScreen} />
+            <Tab.Screen
+                name={routeNames.home}
+                component={HomeScreen}
+                options={{
+                    tabBarIcon: ({ focused }) => (
+                        <LayoutDashboard color={focused ? theme.text : theme.text + "60"} size={22} />
+                    ),
+                }}
+            />
+            <Tab.Screen
+                name={routeNames.tasks}
+                component={TaskScreen}
+                options={{
+                    tabBarIcon: ({ focused }) => (
+                        <ListTodo color={focused ? theme.text : theme.text + "60"} size={22} />
+                    ),
+                }}
+            />
+            <Tab.Screen
+                name={routeNames.calendar}
+                component={CalendarScreen}
+                options={{
+                    tabBarLabel: "Calendar",
+                    tabBarIcon: ({ focused }) => (
+                        <CalendarDays color={focused ? theme.text : theme.text + "60"} size={22} />
+                    ),
+                }}
+            />
         </Tab.Navigator>
-    )
+    );
 }
