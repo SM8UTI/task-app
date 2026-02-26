@@ -58,8 +58,24 @@ export default function TaskListContent({
     onSetStatus,
     onDelete,
 }: Props) {
-    const filteredTasks = tasks.filter((t) => t.status === currentTab);
+    const today = new Date();
+    // For the completed tab: only show tasks completed today (auto-clears on next day)
+    const filteredTasks = tasks.filter((t) => {
+        if (t.status !== currentTab) return false;
+        if (currentTab === "completed") {
+            return isSameDay(new Date(t.dueDate), today);
+        }
+        return true;
+    });
     const groups = groupTasksByDate(filteredTasks);
+
+    // Per-tab empty state
+    const EMPTY: Record<string, { emoji: string; title: string; hint: string }> = {
+        "to-do": { emoji: "✅", title: "You're all caught up!", hint: "No to-do tasks. Tap \"Add Task\" to create one." },
+        "in-progress": { emoji: "🚀", title: "Nothing in progress yet", hint: "Swipe right on a to-do card to move it here." },
+        "completed": { emoji: "🎉", title: "No completions today yet", hint: "Finish a task and it will appear here." },
+    };
+    const empty = EMPTY[currentTab] ?? { emoji: "📭", title: "Nothing here", hint: "" };
 
     return (
         <ScrollView
@@ -75,15 +91,15 @@ export default function TaskListContent({
                 gap: 28,
             }}>
                 {filteredTasks.length === 0 ? (
-                    <Text style={{
-                        fontFamily: theme.fonts[500],
-                        fontSize: 16,
-                        color: theme.text + "80",
-                        textAlign: "center",
-                        marginTop: 40,
-                    }}>
-                        No {currentTab.replace("-", " ")} tasks.
-                    </Text>
+                    <View style={{ alignItems: "center", marginTop: 60, gap: 8, paddingHorizontal: 24 }}>
+                        <Text style={{ fontSize: 40 }}>{empty.emoji}</Text>
+                        <Text style={{ fontFamily: theme.fonts[600], fontSize: 17, color: theme.text + "CC", textAlign: "center", marginTop: 4 }}>
+                            {empty.title}
+                        </Text>
+                        <Text style={{ fontFamily: theme.fonts[400], fontSize: 14, color: theme.text + "55", textAlign: "center", lineHeight: 22 }}>
+                            {empty.hint}
+                        </Text>
+                    </View>
                 ) : (
                     groups.map(({ label, tasks: groupTasks }) => (
                         <View key={label} style={{ gap: 14 }}>
