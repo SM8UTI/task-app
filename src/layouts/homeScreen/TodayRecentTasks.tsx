@@ -175,6 +175,25 @@ function TodayRecentTasks() {
     if (highPrioCount > 0) dominantPriorityText = "High";
     else if (mediumPrioCount > 0) dominantPriorityText = "Medium";
 
+    // Top 3 tags by frequency across today's tasks
+    const tagCounts: Record<string, number> = {};
+    for (const task of todayTasks) {
+        for (const tag of task.tag ?? []) {
+            tagCounts[tag] = (tagCounts[tag] ?? 0) + 1;
+        }
+    }
+    const topTags = Object.entries(tagCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3)
+        .map(([tag]) => tag);
+
+    // Display logic: high-priority tasks (all), else max 2 medium
+    const todayHighTasks = todayTasks.filter(t => t.priority === "high");
+    const todayMediumTasks = todayTasks.filter(t => t.priority === "medium");
+    const displayTasks = todayHighTasks.length > 0
+        ? todayHighTasks
+        : todayMediumTasks.slice(0, 2);
+
     // 2. Cycle colors
     const taskColors = [theme.primary[1], theme.primary[3], theme.primary[4]];
 
@@ -233,22 +252,28 @@ function TodayRecentTasks() {
                 </View>
 
                 <View style={{ flexDirection: "row", gap: 12, marginTop: 24, flexWrap: "wrap" }}>
-                    {["shopping", "renovation", "planning"].map((tag, index) => (
-                        <Text key={index} style={{ fontFamily: theme.fonts[500], fontSize: 13, color: theme.background + "80", textTransform: "capitalize" }}>
-                            #{tag}
+                    {topTags.length > 0 ? (
+                        topTags.map((tag, index) => (
+                            <Text key={index} style={{ fontFamily: theme.fonts[500], fontSize: 13, color: theme.background + "80", textTransform: "capitalize" }}>
+                                #{tag}
+                            </Text>
+                        ))
+                    ) : (
+                        <Text style={{ fontFamily: theme.fonts[500], fontSize: 13, color: theme.background + "50" }}>
+                            No tags yet
                         </Text>
-                    ))}
+                    )}
                 </View>
             </View>
 
             {/* ── Task List ── */}
             <View style={{ flexDirection: "column", gap: 12, marginTop: 12 }}>
-                {activeTasks.length === 0 ? (
-                    <Text style={{ fontFamily: theme.fonts[500], fontSize: 16, color: theme.background + "60", textAlign: "center", marginTop: 20 }}>
-                        No active tasks for today.
+                {displayTasks.length === 0 ? (
+                    <Text style={{ fontFamily: theme.fonts[500], fontSize: 16, color: theme.text + "60", textAlign: "center", marginTop: 20 }}>
+                        No priority tasks for today.
                     </Text>
                 ) : (
-                    activeTasks.map((task, index) => (
+                    displayTasks.map((task, index) => (
                         <TaskCard
                             key={task.id}
                             task={task}

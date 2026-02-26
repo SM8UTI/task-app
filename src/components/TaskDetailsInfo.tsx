@@ -45,6 +45,12 @@ const getAdvanceCfg = (status: string): AdvanceCfg => {
     };
 };
 
+// ─── Status display config ───────────────────────────────────────────────────
+const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
+    "to-do": { label: "To Do", color: "#888888", bg: "#88888818" },
+    "in-progress": { label: "In Progress", color: "#4A7FD6", bg: "#4A7FD618" },
+    "completed": { label: "Completed", color: "#34D399", bg: "#34D39918" },
+};
 
 // ─── Date label ─────────────────────────────────────────────────────────────
 const isSameDay = (a: Date, b: Date) => a.toDateString() === b.toDateString();
@@ -80,10 +86,11 @@ export default function TaskDetailsInfo({ task, onClose, onAdvanceStatus, onDele
 
     const advanceCfg = getAdvanceCfg(task.status);
     const priorityCfg = PRIORITY_CONFIG[task.priority] ?? null;
+    const statusCfg = STATUS_CONFIG[task.status] ?? STATUS_CONFIG["to-do"];
 
     return (
         <View style={styles.container}>
-            {/* ── Top row: date + priority ──────────────────── */}
+            {/* ── Top row: date + priority + status ─────────── */}
             <View style={styles.topRow}>
                 <View style={styles.datePill}>
                     <Calendar1 size={14} color={theme.background + "80"} />
@@ -92,14 +99,25 @@ export default function TaskDetailsInfo({ task, onClose, onAdvanceStatus, onDele
                     </Text>
                 </View>
 
-                {priorityCfg && (
-                    <View style={[styles.priorityPill, { backgroundColor: priorityCfg.bg }]}>
-                        <View style={[styles.priorityDot, { backgroundColor: priorityCfg.dot }]} />
-                        <Text style={[styles.priorityLabel, { color: priorityCfg.dot }]}>
-                            {priorityCfg.label}
+                <View style={{ flexDirection: "row", gap: 6, alignItems: "center" }}>
+                    {/* Status pill */}
+                    <View style={[styles.priorityPill, { backgroundColor: statusCfg.bg }]}>
+                        <View style={[styles.priorityDot, { backgroundColor: statusCfg.color }]} />
+                        <Text style={[styles.priorityLabel, { color: statusCfg.color }]}>
+                            {statusCfg.label}
                         </Text>
                     </View>
-                )}
+
+                    {/* Priority pill */}
+                    {priorityCfg && (
+                        <View style={[styles.priorityPill, { backgroundColor: priorityCfg.bg }]}>
+                            <View style={[styles.priorityDot, { backgroundColor: priorityCfg.dot }]} />
+                            <Text style={[styles.priorityLabel, { color: priorityCfg.dot }]}>
+                                {priorityCfg.label}
+                            </Text>
+                        </View>
+                    )}
+                </View>
             </View>
 
             {/* ── Title & Description ───────────────────────── */}
@@ -153,7 +171,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         marginBottom: 20,
         flexWrap: "wrap",
-        gap: 8,
+        gap: 12,
     },
     datePill: {
         flexDirection: "row",
