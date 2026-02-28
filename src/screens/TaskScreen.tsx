@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import { View, StyleSheet, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import ConfettiCannon from "react-native-confetti-cannon";
 import theme from "../data/color-theme";
 import { useTaskManager } from "../hooks/useTaskManager";
 import { useTaskSheet } from "../hooks/useTaskSheet";
@@ -11,6 +13,7 @@ import AddTaskBottomSheet from "../components/AddTaskBottomSheet";
 export default function TaskScreen() {
     const [isAddSheetVisible, setAddSheetVisible] = useState(false);
     const [currentTab, setCurrentTab] = useState("to-do");
+    const [showConfetti, setShowConfetti] = useState(false);
 
     // Task data & CRUD
     const {
@@ -54,8 +57,12 @@ export default function TaskScreen() {
                 currentTab={currentTab}
                 tasks={tasks}
                 onOpenTask={openTaskSheet}
-                onAdvanceStatus={(id) => advanceTaskStatus(id)}
-                onSetStatus={(id, status, dueDate) => setTaskStatus(id, status as any, dueDate)}
+                onAdvanceStatus={(id) => advanceTaskStatus(id, (tid, nextStatus) => {
+                    if (nextStatus === "completed") setShowConfetti(true);
+                })}
+                onSetStatus={(id, status, dueDate) => setTaskStatus(id, status as any, dueDate, () => {
+                    if (status === "completed") setShowConfetti(true);
+                })}
                 onDelete={(id) =>
                     deleteTask(id, (tid) => {
                         if (selectedTask?.id === tid) closeTaskSheet();
@@ -81,7 +88,9 @@ export default function TaskScreen() {
                 onClose={closeTaskSheet}
                 onAdvanceStatus={() => {
                     if (selectedTask) {
-                        advanceTaskStatus(selectedTask.id);
+                        advanceTaskStatus(selectedTask.id, (tid, nextStatus) => {
+                            if (nextStatus === "completed") setShowConfetti(true);
+                        });
                         closeTaskSheet();
                     }
                 }}
@@ -89,6 +98,20 @@ export default function TaskScreen() {
                     selectedTask && deleteTask(selectedTask.id, () => closeTaskSheet())
                 }
             />
+
+            {/* ── Confetti Celebration ── */}
+            {showConfetti && (
+                <View style={[StyleSheet.absoluteFillObject, { pointerEvents: "none", zIndex: 9999 }]}>
+                    <ConfettiCannon
+                        count={200}
+                        origin={{ x: Dimensions.get("window").width / 2, y: -20 }}
+                        fallSpeed={2500}
+                        fadeOut={true}
+                        autoStart={true}
+                        onAnimationEnd={() => setShowConfetti(false)}
+                    />
+                </View>
+            )}
         </SafeAreaView>
     );
 }

@@ -2,6 +2,7 @@ import React from "react";
 import { ScrollView, Text, View } from "react-native";
 import theme from "../../data/color-theme";
 import TaskCard from "../../components/TaskCard";
+import { CheckCircle, Rocket, PartyPopper, Inbox } from "lucide-react-native";
 
 // ─── Date grouping helpers ────────────────────────────────────────────────
 const isSameDay = (a: Date, b: Date) => a.toDateString() === b.toDateString();
@@ -91,12 +92,12 @@ export default function TaskListContent({
     const groups = groupTasksByDate(filteredTasks);
 
     // Per-tab empty state
-    const EMPTY: Record<string, { emoji: string; title: string; hint: string }> = {
-        "to-do": { emoji: "✅", title: "You're all caught up!", hint: "No to-do tasks. Tap \"Add Task\" to create one." },
-        "in-progress": { emoji: "🚀", title: "Nothing in progress yet", hint: "Swipe right on a to-do card to move it here." },
-        "completed": { emoji: "🎉", title: "No completions today yet", hint: "Finish a task and it will appear here." },
+    const EMPTY: Record<string, { icon: React.ReactNode; title: string; hint: string }> = {
+        "to-do": { icon: <CheckCircle size={48} color={theme.text + "80"} strokeWidth={1.5} />, title: "You're all caught up!", hint: "No to-do tasks. Tap \"Add Task\" to create one." },
+        "in-progress": { icon: <Rocket size={48} color={theme.text + "80"} strokeWidth={1.5} />, title: "Nothing in progress yet", hint: "Swipe right on a to-do card to move it here." },
+        "completed": { icon: <PartyPopper size={48} color={theme.text + "80"} strokeWidth={1.5} />, title: "No completions today yet", hint: "Finish a task and it will appear here." },
     };
-    const empty = EMPTY[currentTab] ?? { emoji: "📭", title: "Nothing here", hint: "" };
+    const empty = EMPTY[currentTab] ?? { icon: <Inbox size={48} color={theme.text + "80"} strokeWidth={1.5} />, title: "Nothing here", hint: "" };
 
     return (
         <ScrollView
@@ -113,7 +114,7 @@ export default function TaskListContent({
             }}>
                 {filteredTasks.length === 0 ? (
                     <View style={{ alignItems: "center", marginTop: 60, gap: 8, paddingHorizontal: 24 }}>
-                        <Text style={{ fontSize: 40 }}>{empty.emoji}</Text>
+                        <View style={{ marginBottom: 8 }}>{empty.icon}</View>
                         <Text style={{ fontFamily: theme.fonts[600], fontSize: 17, color: theme.text + "CC", textAlign: "center", marginTop: 4 }}>
                             {empty.title}
                         </Text>
@@ -164,11 +165,11 @@ export default function TaskListContent({
 
                             {/* ── Task cards under this date ────────── */}
                             <View style={{ gap: 14 }}>
-                                {groupTasks.map((task, index) => (
+                                {groupTasks.map((task) => (
                                     <TaskCard
                                         key={task.id}
                                         task={task}
-                                        bgColor={CARD_COLORS[index % CARD_COLORS.length]}
+                                        bgColor={CARD_COLORS[task.id % CARD_COLORS.length]}
                                         onPress={() => onOpenTask(task)}
                                         onAdvanceStatus={() => onAdvanceStatus(task.id)}
                                         onSetStatus={(s, d) => onSetStatus(task.id, s, d)}

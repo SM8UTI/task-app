@@ -30,14 +30,14 @@
 
 ## ✨ Features
 
-### 🗒️ Task Management
+### 🗒️ Deep Task Management
 
-- Create tasks with **title**, **description**, **priority** (High / Medium / Low), **due date & time**, and **tags**
-- All data persisted locally with **AsyncStorage** — works fully offline, no backend needed
-- Tasks are grouped by due date with dynamic **Today / Tomorrow / Formatted-date** section headers
-- Up to **2 tags** shown on the card with a `+N` overflow badge for extras
+- **Rich Task Metadata**: Create tasks combining **Titles**, detailed **Descriptions**, **Due Dates** (parsed to the minute), custom **Tags/Categories**, and strict **Priority States**.
+- **Responsive Grouping System**: Tasks automatically group by due date dynamically updating UI headers (`Today` / `Tomorrow` / `Formatted Date`) for maximum clarity.
+- **Offline-First Persistence Engine**: `AsyncStorage` backs the entire app (`@myapp_tasks_data`). Sorting handles JSON date repopulation safely. Data is strictly offline—no backend required.
+- **Smart UI Overflow**: Tasks render up to **2 tags** natively on minimalist cards. Any overflow elegantly maps to a `+N` badge indicating remaining contexts.
 
-### 🔄 Status Lifecycle
+### 🔄 Action Lifecycle & Gesture System
 
 ```
  ┌────────┐   swipe right   ┌─────────────┐   swipe right   ┌───────────┐
@@ -49,45 +49,40 @@
                                         To Do  (due date = tomorrow)
 ```
 
-- **Swipe right** → advance status (To Do → In Progress → Completed → To Do tomorrow)
-- **Swipe left** → delete the task
-- **Long-press 2 s** on an In-Progress or Completed card → quick status menu (← Prev / Next →)
-- Long-press is **disabled** on To-Do cards (no previous state to go back to)
-- Completed tasks rescheduled to tomorrow automatically get a fresh `09:00` due time
+- **Fluid Swipe Gestures**: utilizing React Native `PanResponder` and `Animated` libraries.
+  - **Swipe Right (> 35% screen width)**: Automatically advance the task state (To Do → In Progress → Completed → cycle back via Tomorrow).
+  - **Swipe Left (> 35% screen width)**: Instant task deletion with physical feedback.
+- **Action Resets**: Spring animations gracefully cancel gestures abandoned mid-screen.
+- **Advanced Context Menu**: Holding a non-To-Do card for `2000ms` pops a hidden status navigation bar (Previous / Next), allowing manual status rewinds minus the swipes.
+- **Smart Rescheduling**: Tasks shifting from `Completed` back to `To-Do` are natively given a `09:00 AM` due time on the immediate next day.
 
-### 🎯 Priority System
+### 🎯 Strict Priority System
 
-| Level         | Dot Color | Badge Background |
-| ------------- | --------- | ---------------- |
-| 🔴 **High**   | `#FF5757` | `#FF575715`      |
-| 🟡 **Medium** | `#a86d00` | `#FFB22415`      |
-| ⚫ **Low**    | `#343434` | `#61616115`      |
+| Level         | Dot Color | Badge Background | Configuration Model   |
+| ------------- | --------- | ---------------- | --------------------- |
+| 🔴 **High**   | `#FF5757` | `#FF575715`      | Demands completion    |
+| 🟡 **Medium** | `#a86d00` | `#FFB22415`      | Standard tasks        |
+| ⚫ **Low**    | `#343434` | `#61616115`      | Flexible requirements |
 
-- **Home screen** shows: all High-priority today tasks → fallback to max 2 Medium → empty if none
-- **Priority pill** appears on every task card (bottom-right) and in the task details sheet
+- **Hero Card Fallback Logic**: The Home Screen actively surfaces all `High` priority tasks for "Today". Falling back to a maximum of `2 Medium` items if no critical tasks exist.
+- **Pill Badges**: Distinctly colored status dots and priority labels mount conditionally on task cards and deep-dive bottom sheets based on internal configs.
 
-### 🔥 Daily Streak
+### 🔥 Intelligent Streak Engine
 
-- A **streak day** is earned when **every task due that day** is completed
-- Streak is evaluated from **yesterday backward** — today counts only once all tasks are done
-- Days **with no tasks** don't break the streak (skipped)
-- A day **with tasks left incomplete** resets the streak to `0`
-- Streak is persisted per-day in AsyncStorage under `@myapp_streak_log`
+- **Strict Validation**: A streak day triggers exclusively when **all** tasks linked to a calendar day are verified `Completed`. Partial completion fails validation.
+- **Timezone Aware Navigation**: Streak evaluates accurately from `yesterday backward`. Today only factors in once all tasks check out.
+- **Forgiving Empty Days**: Rest days (zero tasks scheduled) passively bridge your streak. They never sever it.
+- **Punishing Incompletes**: One single abandoned task resets the localized `@myapp_streak_log` to zero.
 
-### 📅 Calendar View
+### 📅 Calendar Heatmap Analytics
 
-- Month grid with color-coded cells:
-
-| Color               | Meaning                      |
-| ------------------- | ---------------------------- |
-| 🟢 Green `#34D399`  | All tasks done               |
-| 🟡 Yellow `#FFCA28` | Partial completion           |
-| 🔴 Red `#FF5757`    | Tasks missed / not completed |
-| ⬜ Dim              | No tasks or future date      |
-
-- Each cell shows a small indicator dot below the day number
-- Navigate **backward through previous months**
-- Stats row at the bottom: **Day Streak · Perfect Days · Tasks Done**
+- **Grid Visualization**: A visual matrix analyzing historical performance:
+  - 🟢 **Green** (`#34D399`): Flawless perfection (All tasks done).
+  - 🟡 **Yellow** (`#FFCA28`): Partial efforts.
+  - 🔴 **Red** (`#FF5757`): Failed days.
+  - ⬜ **Dim**: Future dates or rest days.
+- **Infinite Browsing**: Traverse months safely evaluating previous logs.
+- **Meta Stats Row**: Compiles raw analytics natively: **Current Day Streak**, **Total Perfect Days**, and your precise timeline of **Tasks Done**.
 
 ---
 

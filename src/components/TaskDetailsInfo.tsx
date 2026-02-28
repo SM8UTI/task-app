@@ -49,7 +49,7 @@ const getAdvanceCfg = (status: string): AdvanceCfg => {
 const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
     "to-do": { label: "To Do", color: "#888888", bg: "#88888818" },
     "in-progress": { label: "In Progress", color: "#4A7FD6", bg: "#4A7FD618" },
-    "completed": { label: "Completed", color: "#34D399", bg: "#34D39918" },
+    "completed": { label: "Completed", color: "#003e28ff", bg: "#34D39918" },
 };
 
 // ─── Date label ─────────────────────────────────────────────────────────────

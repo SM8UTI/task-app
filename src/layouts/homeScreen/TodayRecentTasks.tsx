@@ -11,7 +11,9 @@ import {
     KeyboardAvoidingView,
     Pressable,
     PanResponder,
+    Dimensions,
 } from "react-native";
+import ConfettiCannon from "react-native-confetti-cannon";
 import theme from "../../data/color-theme";
 import { Calendar1, Plus, CircleArrowOutUpRight } from "lucide-react-native";
 import TaskDetailsInfo from "../../components/TaskDetailsInfo";
@@ -27,6 +29,7 @@ function TodayRecentTasks() {
     const [selectedTask, setSelectedTask] = useState<any | null>(null);
     const [sheetVisible, setSheetVisible] = useState(false);
     const [isAddSheetVisible, setAddSheetVisible] = useState(false);
+    const [showConfetti, setShowConfetti] = useState(false);
 
     const slideAnim = React.useRef(new Animated.Value(0)).current;
 
@@ -87,6 +90,11 @@ function TodayRecentTasks() {
     };
 
     const toggleTaskComplete = async (taskId: number) => {
+        const task = tasks.find(t => t.id === taskId);
+        if (task && task.status !== "completed") {
+            setShowConfetti(true);
+        }
+
         const updatedTasks = tasks.map(t => t.id === taskId ? { ...t, isCompleted: true, status: "completed" } : t);
         setTasks(updatedTasks);
         try {
@@ -268,22 +276,16 @@ function TodayRecentTasks() {
 
             {/* ── Task List ── */}
             <View style={{ flexDirection: "column", gap: 12, marginTop: 12 }}>
-                {displayTasks.length === 0 ? (
-                    <Text style={{ fontFamily: theme.fonts[500], fontSize: 16, color: theme.text + "60", textAlign: "center", marginTop: 20 }}>
-                        No priority tasks for today.
-                    </Text>
-                ) : (
-                    displayTasks.map((task, index) => (
-                        <TaskCard
-                            key={task.id}
-                            task={task}
-                            bgColor={taskColors[index % taskColors.length]}
-                            onPress={() => openTaskSheet(task)}
-                            onAdvanceStatus={() => toggleTaskComplete(task.id)}
-                            onDelete={() => deleteTask(task.id)}
-                        />
-                    ))
-                )}
+                {displayTasks.map((task, index) => (
+                    <TaskCard
+                        key={task.id}
+                        task={task}
+                        bgColor={taskColors[index % taskColors.length]}
+                        onPress={() => openTaskSheet(task)}
+                        onAdvanceStatus={() => toggleTaskComplete(task.id)}
+                        onDelete={() => deleteTask(task.id)}
+                    />
+                ))}
             </View>
 
             {/* ── Bottom Sheet Modal ── */}
@@ -349,6 +351,20 @@ function TodayRecentTasks() {
                 onClose={() => setAddSheetVisible(false)}
                 onSave={saveNewTask}
             />
+
+            {/* ── Confetti Celebration ── */}
+            {showConfetti && (
+                <View style={[StyleSheet.absoluteFillObject, { pointerEvents: "none", zIndex: 9999 }]}>
+                    <ConfettiCannon
+                        count={200}
+                        origin={{ x: Dimensions.get("window").width / 2, y: -20 }}
+                        fallSpeed={2500}
+                        fadeOut={true}
+                        autoStart={true}
+                        onAnimationEnd={() => setShowConfetti(false)}
+                    />
+                </View>
+            )}
         </View>
     );
 }
