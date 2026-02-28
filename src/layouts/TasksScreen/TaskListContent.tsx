@@ -9,18 +9,35 @@ const isSameDay = (a: Date, b: Date) => a.toDateString() === b.toDateString();
 const getGroupLabel = (dueDate: Date | string): string => {
     const d = new Date(dueDate);
     const now = new Date();
+    const yesterday = new Date(now);
+    yesterday.setDate(now.getDate() - 1);
     const tomorrow = new Date(now);
     tomorrow.setDate(now.getDate() + 1);
     if (isSameDay(d, now)) return "Today";
     if (isSameDay(d, tomorrow)) return "Tomorrow";
-    return d.toLocaleDateString("en-US", {
-        weekday: "long",
-        month: "short",
-        day: "numeric",
-    });
+    if (isSameDay(d, yesterday)) return "Yesterday";
+    // e.g. "12 Jan, 2026"
+    const day = d.getDate();
+    const month = d.toLocaleDateString("en-US", { month: "short" });
+    const year = d.getFullYear();
+    return `${day} ${month}, ${year}`;
 };
 
 type TaskGroup = { label: string; tasks: any[] };
+
+// Map a group label back to a sortable timestamp for ordering groups
+const getLabelSortKey = (label: string): number => {
+    if (label === "Today") return 0; // always first
+    const now = new Date();
+    if (label === "Yesterday") {
+        const d = new Date(now); d.setDate(now.getDate() - 1); return d.getTime();
+    }
+    if (label === "Tomorrow") {
+        const d = new Date(now); d.setDate(now.getDate() + 1); return d.getTime();
+    }
+    // "12 Jan, 2026" → parse back to a Date for sorting
+    return new Date(label).getTime() || 0;
+};
 
 const groupTasksByDate = (tasks: any[]): TaskGroup[] => {
     const sorted = [...tasks].sort(
@@ -32,7 +49,18 @@ const groupTasksByDate = (tasks: any[]): TaskGroup[] => {
         if (!groupMap.has(label)) groupMap.set(label, []);
         groupMap.get(label)!.push(task);
     }
-    return Array.from(groupMap.entries()).map(([label, tasks]) => ({ label, tasks }));
+
+    // Build groups and sort: Today always first, then ascending by date
+    return Array.from(groupMap.entries())
+        .map(([label, tasks]) => ({ label, tasks }))
+        .sort((a, b) => {
+            const aKey = getLabelSortKey(a.label);
+            const bKey = getLabelSortKey(b.label);
+            // Today (key=0) is always first; others sorted ascending
+            if (aKey === 0) return -1;
+            if (bKey === 0) return 1;
+            return aKey - bKey;
+        });
 };
 
 // ─── Card color pool ──────────────────────────────────────────────────────
@@ -58,15 +86,8 @@ export default function TaskListContent({
     onSetStatus,
     onDelete,
 }: Props) {
-    const today = new Date();
-    // For the completed tab: only show tasks completed today (auto-clears on next day)
-    const filteredTasks = tasks.filter((t) => {
-        if (t.status !== currentTab) return false;
-        if (currentTab === "completed") {
-            return isSameDay(new Date(t.dueDate), today);
-        }
-        return true;
-    });
+    // Show all tasks matching the current tab's status
+    const filteredTasks = tasks.filter((t) => t.status === currentTab);
     const groups = groupTasksByDate(filteredTasks);
 
     // Per-tab empty state
