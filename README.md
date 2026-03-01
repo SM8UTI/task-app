@@ -263,5 +263,5 @@ MIT License — free to use, modify, and distribute.
 <br />
 
 <p align="center">
-  Copyright © 2026 <a href="https://sm8uti.com">Smruti Ranjan Nayak</a>. All rights reserved.
+  Copyright © 2026 <a href="https://sm8uti.com">@sm8uti</a>. All rights reserved.
 </p>

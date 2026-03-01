@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import theme from "../data/color-theme";
 import AnimatedIconButton from "./AnimatedIconButton";
-import { X, ArrowDown, ArrowRight, ArrowUp, CheckCircle } from "lucide-react-native";
+import { X, CheckCircle, CalendarDays, Sunrise, ChevronsDown, Minus, ChevronsUp } from "lucide-react-native";
 
 export type NewTaskData = {
     title: string;
@@ -39,6 +39,7 @@ export default function AddTaskBottomSheet({ visible, onClose, onSave }: Props) 
     const [tags, setTags] = useState<string[]>([]);
     const [currentTag, setCurrentTag] = useState("");
     const [priority, setPriority] = useState<"high" | "medium" | "low">("medium");
+    const [selectedDateMode, setSelectedDateMode] = useState<"today" | "tomorrow">("today");
 
     // Local state for when the modal is actually mounted (for exit animation)
     const [isMounted, setIsMounted] = useState(visible);
@@ -51,6 +52,7 @@ export default function AddTaskBottomSheet({ visible, onClose, onSave }: Props) 
             setTags([]);
             setCurrentTag("");
             setPriority("medium");
+            setSelectedDateMode("today");
             Animated.spring(slideAnim, {
                 toValue: 1,
                 useNativeDriver: true,
@@ -120,13 +122,19 @@ export default function AddTaskBottomSheet({ visible, onClose, onSave }: Props) 
             finalTags.push(currentTag.trim());
         }
 
+        const taskDueDate = new Date();
+        if (selectedDateMode === "tomorrow") {
+            taskDueDate.setDate(taskDueDate.getDate() + 1);
+            taskDueDate.setHours(9, 0, 0, 0);
+        }
+
         onSave({
             title,
             description,
             priority,
             status: "to-do",
             tag: finalTags.length ? finalTags : ["general"],
-            dueDate: new Date(),
+            dueDate: taskDueDate,
         });
     };
 
@@ -228,6 +236,57 @@ export default function AddTaskBottomSheet({ visible, onClose, onSave }: Props) 
                             />
                         </View>
 
+                        <Text style={styles.label}>Due Date</Text>
+                        <View style={{ flexDirection: "row", gap: 12, marginBottom: 20 }}>
+                            <View style={{ flex: 1 }}>
+                                <AnimatedIconButton
+                                    onPress={() => setSelectedDateMode("today")}
+                                    style={{
+                                        flex: 1,
+                                        paddingVertical: 12,
+                                        borderRadius: 44,
+                                        borderWidth: 1,
+                                        borderColor: selectedDateMode === "today" ? theme.background : theme.background + "20",
+                                        backgroundColor: selectedDateMode === "today" ? theme.background : "transparent",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        gap: 6,
+                                        flexDirection: "row"
+                                    }}
+                                >
+                                    <CalendarDays size={18} color={selectedDateMode === "today" ? theme.white : theme.background} />
+                                    <Text style={{
+                                        color: selectedDateMode === "today" ? theme.white : theme.background,
+                                        fontFamily: theme.fonts[500],
+                                    }}>Today</Text>
+                                </AnimatedIconButton>
+                            </View>
+                            <View style={{ flex: 1 }}>
+                                <AnimatedIconButton
+                                    onPress={() => setSelectedDateMode("tomorrow")}
+                                    style={{
+                                        flex: 1,
+                                        paddingVertical: 12,
+                                        borderRadius: 44,
+                                        borderWidth: 1,
+                                        borderColor: selectedDateMode === "tomorrow" ? theme.background : theme.background + "20",
+                                        backgroundColor: selectedDateMode === "tomorrow" ? theme.background : "transparent",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        gap: 6,
+                                        flexDirection: "row"
+                                    }}
+                                >
+                                    <Sunrise size={18} color={selectedDateMode === "tomorrow" ? theme.white : theme.background} />
+                                    <Text style={{
+                                        color: selectedDateMode === "tomorrow" ? theme.white : theme.background,
+                                        fontFamily: theme.fonts[500],
+                                    }}>Tomorrow</Text>
+                                </AnimatedIconButton>
+                            </View>
+
+                        </View>
+
                         <Text style={styles.label}>Priority</Text>
                         <View style={{ flexDirection: "row", gap: 12, marginBottom: 32 }}>
                             {(["low", "medium", "high"] as const).map((p) => {
@@ -235,9 +294,9 @@ export default function AddTaskBottomSheet({ visible, onClose, onSave }: Props) 
                                 const isHigh = p === "high";
 
                                 const getIcon = () => {
-                                    if (p === "low") return <ArrowDown size={18} color={isSelected ? theme.white : theme.background} />;
-                                    if (p === "medium") return <ArrowRight size={18} color={isSelected ? theme.white : theme.background} />;
-                                    return <ArrowUp size={18} color={isSelected ? theme.white : theme.error} />;
+                                    if (p === "low") return <ChevronsDown size={18} color={isSelected ? theme.white : theme.background} />;
+                                    if (p === "medium") return <Minus size={18} color={isSelected ? theme.white : theme.background} />;
+                                    return <ChevronsUp size={18} color={isSelected ? theme.white : theme.error} />;
                                 };
 
                                 return (

@@ -14,6 +14,7 @@ export default function TaskScreen() {
     const [isAddSheetVisible, setAddSheetVisible] = useState(false);
     const [currentTab, setCurrentTab] = useState("to-do");
     const [showConfetti, setShowConfetti] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
 
     // Task data & CRUD
     const {
@@ -38,6 +39,17 @@ export default function TaskScreen() {
         closeTaskSheet,
     } = useTaskSheet();
 
+    // ── Apply search filter ──
+    const safeQuery = searchQuery.trim().toLowerCase();
+    const filteredTasks = tasks.filter(t =>
+        t.title.toLowerCase().includes(safeQuery) ||
+        t.description.toLowerCase().includes(safeQuery)
+    );
+
+    const filteredTodoCount = filteredTasks.filter(t => t.status === "to-do").length;
+    const filteredInProgressCount = filteredTasks.filter(t => t.status === "in-progress").length;
+    const filteredCompletedCount = filteredTasks.filter(t => t.status === "completed").length;
+
     return (
         <SafeAreaView
             style={{ flex: 1, backgroundColor: theme.background }}
@@ -47,15 +59,17 @@ export default function TaskScreen() {
                 onAddTaskPress={() => setAddSheetVisible(true)}
                 currentTab={currentTab}
                 onTabChange={setCurrentTab}
-                todoCount={todoCount}
-                inProgressCount={inProgressCount}
-                completedCount={completedCount}
-                totalCount={tasks.length}
+                todoCount={filteredTodoCount}
+                inProgressCount={filteredInProgressCount}
+                completedCount={filteredCompletedCount}
+                totalCount={filteredTasks.length}
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
             />
 
             <TaskListContent
                 currentTab={currentTab}
-                tasks={tasks}
+                tasks={filteredTasks}
                 onOpenTask={openTaskSheet}
                 onAdvanceStatus={(id) => advanceTaskStatus(id, (tid, nextStatus) => {
                     if (nextStatus === "completed") setShowConfetti(true);

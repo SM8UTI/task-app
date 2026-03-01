@@ -1,7 +1,8 @@
-import { Text, View } from "react-native";
+import { Text, View, TextInput } from "react-native";
 import theme from "../../data/color-theme";
 import AnimatedIconButton from "../../components/AnimatedIconButton";
-import { Plus } from "lucide-react-native";
+import { Plus, Search } from "lucide-react-native";
+
 type Props = {
     onAddTaskPress: () => void;
     currentTab: string;
@@ -10,6 +11,8 @@ type Props = {
     inProgressCount: number;
     completedCount: number;
     totalCount: number;
+    searchQuery: string;
+    onSearchChange: (query: string) => void;
 };
 
 export default function HeaderTaskScreen({
@@ -19,10 +22,10 @@ export default function HeaderTaskScreen({
     todoCount,
     inProgressCount,
     completedCount,
-    totalCount
+    totalCount,
+    searchQuery,
+    onSearchChange,
 }: Props) {
-
-
     return (
         <View style={{
             paddingHorizontal: theme.padding.paddingMainX,
@@ -77,6 +80,37 @@ export default function HeaderTaskScreen({
                     </AnimatedIconButton>
                 </View>
             </View>
+
+            {/* ── Search Bar ── */}
+            <View style={{
+                flexDirection: "row",
+                alignItems: "center",
+                backgroundColor: theme.white + "08",
+                borderRadius: theme.border.radius.main,
+                paddingHorizontal: 16,
+                paddingVertical: 12,
+                marginTop: 16,
+                gap: 12,
+            }}>
+                <Search size={20} color={theme.text + "50"} />
+                <TextInput
+                    style={{
+                        flex: 1,
+                        color: theme.text,
+                        fontFamily: theme.fonts[500],
+                        fontSize: 16,
+                        padding: 0, // Removes default Android padding
+                    }}
+                    placeholder="Search tasks by title..."
+                    placeholderTextColor={theme.text + "50"}
+                    value={searchQuery}
+                    onChangeText={onSearchChange}
+                    returnKeyType="search"
+                    autoCorrect={false}
+                />
+            </View>
+
+            {/* ── Tabs ── */}
             <View style={{
                 flexDirection: "row",
                 gap: 8,
