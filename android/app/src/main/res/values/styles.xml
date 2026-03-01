@@ -5,7 +5,7 @@
         <!-- Customize your theme here. -->
         <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
         <item name="android:windowFullscreen">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:navigationBarColor">#1F1F1F</item>
     </style>
 
 </resources>
