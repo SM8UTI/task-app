@@ -255,7 +255,7 @@ export default function TaskCard({
                                         navigation.navigate("FocusSetupScreen", { taskId: task.id });
                                     }
                                 }}
-                                style={{ backgroundColor: isActive && activeTaskId === task.id ? theme.white : theme.white + "30", paddingHorizontal: 8, paddingVertical: 5, borderRadius: 12, flexDirection: "row", alignItems: "center", gap: 4 }}
+                                style={{ backgroundColor: isActive && activeTaskId === task.id ? theme.white : theme.background, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 44, flexDirection: "row", alignItems: "center", gap: 4 }}
                             >
                                 <Play fill={isActive && activeTaskId === task.id ? theme.background : theme.white} color={isActive && activeTaskId === task.id ? theme.background : theme.white} size={10} />
                                 <Text style={{ fontFamily: theme.fonts[700], fontSize: 11, color: isActive && activeTaskId === task.id ? theme.background : theme.white }}>
@@ -267,7 +267,7 @@ export default function TaskCard({
 
                             {/* Priority pill */}
                             {priorityCfg && (
-                                <View style={{ backgroundColor: theme.white, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 12, flexDirection: "row", alignItems: "center", gap: 5 }}>
+                                <View style={{ backgroundColor: theme.white, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 44, flexDirection: "row", alignItems: "center", gap: 5 }}>
                                     <View style={{ width: 7, height: 7, borderRadius: 4, backgroundColor: priorityCfg.dot }} />
                                     <Text style={{ fontFamily: theme.fonts[500], fontSize: 12, color: theme.background }}>
                                         {priorityCfg.label.split(" ")[0]}

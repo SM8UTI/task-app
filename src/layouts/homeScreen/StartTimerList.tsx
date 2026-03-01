@@ -1,4 +1,3 @@
-```tsx
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import theme from "../../data/color-theme";
@@ -23,7 +22,7 @@ export default function StartTimerList() {
     const progress = totalSeconds > 0 ? (totalSeconds - timeLeft) / totalSeconds : 0;
 
     const activeTask = activeTaskId ? tasks.find((t: any) => t.id === activeTaskId) : null;
-    const taskTitle = activeTask ? activeTask.title : "Focus Session";
+    const taskTitle = activeTask ? activeTask.title.split("-")[1]?.trim() || activeTask.title : "Focus Session";
 
     // Stylize the active vs inactive timer blocks
     const isActiveTimer = hasActiveSession;
@@ -61,7 +60,7 @@ export default function StartTimerList() {
                     justifyContent: "space-between",
                     overflow: "hidden"
                 }}>
-                
+
                 {isActiveTimer && (
                     <View style={{
                         position: "absolute",
@@ -73,4 +72,36 @@ export default function StartTimerList() {
                     }}>
                         <View style={{
                             height: "100%",
-                            width: `${progress *
+                            width: `${progress * 100}%`,
+                            backgroundColor: theme.background + "40",
+                        }} />
+                    </View>
+                )}
+
+                <View style={{ flex: 1, marginRight: 16 }}>
+                    <Text style={{ fontFamily: theme.fonts[600], fontSize: 16, color: titleColor, marginBottom: 4 }}>
+                        {isActiveTimer ? "Active Focus Timer" : "Focus Timer"}
+                    </Text>
+                    <Text
+                        style={{ fontFamily: theme.fonts[500], fontSize: 14, color: subtitleColor }}
+                        numberOfLines={1}
+                    >
+                        {isActiveTimer ? `${taskTitle} • ${formatTime(timeLeft)}` : "Start a new focus session"}
+                    </Text>
+                </View>
+
+                <View style={{
+                    backgroundColor: iconContainerBg,
+                    width: 44,
+                    height: 44,
+                    borderRadius: 22,
+                    justifyContent: "center",
+                    alignItems: "center"
+                }}>
+                    {isActiveTimer ? <Pause color={iconColor} size={20} /> : <Play color={iconColor} size={20} />}
+                </View>
+
+            </TouchableOpacity>
+        </View>
+    );
+}
