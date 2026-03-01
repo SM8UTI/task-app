@@ -87,6 +87,7 @@ export default function CalendarScreen() {
     const today = new Date();
     const [viewYear, setViewYear] = useState(today.getFullYear());
     const [viewMonth, setViewMonth] = useState(today.getMonth());
+    const [selectedDayInfo, setSelectedDayInfo] = useState<{ day: number, count: number, dateKey: string } | null>(null);
 
     const { currentStreak, log } = useStreak(tasks);
 
@@ -110,10 +111,12 @@ export default function CalendarScreen() {
     const todayKey = toDateKey(today);
 
     const prevMonth = () => {
+        setSelectedDayInfo(null);
         if (viewMonth === 0) { setViewYear(y => y - 1); setViewMonth(11); }
         else setViewMonth(m => m - 1);
     };
     const nextMonth = () => {
+        setSelectedDayInfo(null);
         if (viewMonth === 11) { setViewYear(y => y + 1); setViewMonth(0); }
         else setViewMonth(m => m + 1);
     };
@@ -124,6 +127,12 @@ export default function CalendarScreen() {
     const totalDays = allKeys.filter(k => log[k].total > 0).length;
     const perfectDays = allKeys.filter(k => log[k].total > 0 && log[k].completed >= log[k].total).length;
     const totalDone = allKeys.reduce((s, k) => s + log[k].completed, 0);
+
+    // Monthly graph scale
+    const maxCompletedInMonth = Math.max(1, ...Array.from({ length: daysInMonth }, (_, i) => {
+        const dateKey = `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-${String(i + 1).padStart(2, "0")}`;
+        return log[dateKey]?.completed || 0;
+    }));
 
     // Grid cells
     const cells: (number | null)[] = [
@@ -287,27 +296,71 @@ export default function CalendarScreen() {
                     </View>
                 </View>
 
-                {/* ── Stat pills ───────────────────────────────── */}
-                <View style={{ flexDirection: "row", gap: 10, paddingHorizontal: theme.padding.paddingMainX, marginTop: 14 }}>
-                    {stats.map(({ label, value, accent }) => (
-                        <View key={label} style={{
-                            flex: 1,
-                            backgroundColor: theme.white + "08",
-                            borderRadius: theme.border.radius.main,
-                            paddingVertical: 16,
-                            paddingHorizontal: 12,
-                            alignItems: "center",
-                            borderWidth: 1,
-                            borderColor: theme.white + "10",
-                        }}>
-                            <Text style={{ fontFamily: theme.fonts[700], fontSize: 24, color: accent }}>
-                                {String(value).padStart(2, "0")}
+
+                {/* ── Month Bar Graph ──────────────────────────── */}
+                <View style={{ paddingHorizontal: theme.padding.paddingMainX, marginTop: 14 }}>
+                    <View style={{
+                        backgroundColor: theme.white + "08",
+                        borderRadius: theme.border.radius.main,
+                        padding: 24,
+                        borderWidth: 1,
+                        borderColor: theme.white + "10",
+                    }}>
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+                            <Text style={{ fontFamily: theme.fonts[500], fontSize: 14, color: theme.text }}>
+                                Activity Graph
                             </Text>
-                            <Text style={{ fontFamily: theme.fonts[400], fontSize: 11, color: theme.text + "60", marginTop: 4, textAlign: "center" }}>
-                                {label}
+                            {selectedDayInfo && (
+                                <Text style={{ fontFamily: theme.fonts[600], fontSize: 13, color: theme.primary[3] }}>
+                                    {selectedDayInfo.count} {selectedDayInfo.count === 1 ? "task" : "tasks"} done on {MONTH_NAMES[viewMonth].slice(0, 3)} {selectedDayInfo.day}
+                                </Text>
+                            )}
+                        </View>
+
+                        <View style={{ flexDirection: "row", height: 100, alignItems: "flex-end", justifyContent: "space-between" }}>
+                            {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(day => {
+                                const dateKey = `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+                                const completed = log[dateKey]?.completed || 0;
+                                const isToday = dateKey === todayKey;
+
+                                // Calculate height percentage bounded between 4% (empty) and 100% (max completed)
+                                const hPercent = completed > 0 ? Math.max(15, (completed / maxCompletedInMonth) * 100) : 4;
+
+                                const barColor = isToday ? theme.primary[3]
+                                    : completed > 0 ? theme.primary[4]
+                                        : theme.white + "10";
+
+                                return (
+                                    <TouchableOpacity
+                                        key={day}
+                                        activeOpacity={0.7}
+                                        onPress={() => setSelectedDayInfo(selectedDayInfo?.day === day ? null : { day, count: completed, dateKey })}
+                                        style={{ flex: 1, alignItems: "center", paddingHorizontal: 1, height: "100%", justifyContent: "flex-end" }}
+                                    >
+                                        <View style={{
+                                            width: "100%",
+                                            maxWidth: 8,
+                                            height: `${hPercent}%`,
+                                            backgroundColor: selectedDayInfo?.day === day ? theme.white : barColor,
+                                            borderRadius: 4,
+                                        }} />
+                                    </TouchableOpacity>
+                                );
+                            })}
+                        </View>
+
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 12 }}>
+                            <Text style={{ fontFamily: theme.fonts[500], fontSize: 11, color: theme.text + "40" }}>
+                                1
+                            </Text>
+                            <Text style={{ fontFamily: theme.fonts[500], fontSize: 11, color: theme.text + "40" }}>
+                                {Math.floor(daysInMonth / 2)}
+                            </Text>
+                            <Text style={{ fontFamily: theme.fonts[500], fontSize: 11, color: theme.text + "40" }}>
+                                {daysInMonth}
                             </Text>
                         </View>
-                    ))}
+                    </View>
                 </View>
 
             </ScrollView>

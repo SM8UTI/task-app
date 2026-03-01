@@ -246,24 +246,26 @@ export default function TaskCard({
 
                         <View style={{ flexDirection: "row", gap: 6, alignItems: "center" }}>
                             {/* Timer Pill */}
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                onPress={() => {
-                                    if (isActive && activeTaskId === task.id) {
-                                        navigation.navigate("FocusScreen", { taskId: task.id, duration: Math.floor(timeLeft / 60) });
-                                    } else {
-                                        navigation.navigate("FocusSetupScreen", { taskId: task.id });
-                                    }
-                                }}
-                                style={{ backgroundColor: isActive && activeTaskId === task.id ? theme.white : theme.background, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 44, flexDirection: "row", alignItems: "center", gap: 4 }}
-                            >
-                                <Play fill={isActive && activeTaskId === task.id ? theme.background : theme.white} color={isActive && activeTaskId === task.id ? theme.background : theme.white} size={10} />
-                                <Text style={{ fontFamily: theme.fonts[700], fontSize: 11, color: isActive && activeTaskId === task.id ? theme.background : theme.white }}>
-                                    {isActive && activeTaskId === task.id
-                                        ? `${Math.floor(timeLeft / 60)}:${(timeLeft % 60).toString().padStart(2, "0")}`
-                                        : "Focus"}
-                                </Text>
-                            </TouchableOpacity>
+                            {task.status !== "completed" && (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={() => {
+                                        if (isActive && activeTaskId === task.id) {
+                                            navigation.navigate("FocusScreen", { taskId: task.id, duration: Math.floor(timeLeft / 60) });
+                                        } else {
+                                            navigation.navigate("FocusSetupScreen", { taskId: task.id });
+                                        }
+                                    }}
+                                    style={{ backgroundColor: isActive && activeTaskId === task.id ? theme.white : theme.background, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 44, flexDirection: "row", alignItems: "center", gap: 4 }}
+                                >
+                                    <Play fill={isActive && activeTaskId === task.id ? theme.background : theme.white} color={isActive && activeTaskId === task.id ? theme.background : theme.white} size={10} />
+                                    <Text style={{ fontFamily: theme.fonts[700], fontSize: 11, color: isActive && activeTaskId === task.id ? theme.background : theme.white }}>
+                                        {isActive && activeTaskId === task.id
+                                            ? `${Math.floor(timeLeft / 60)}:${(timeLeft % 60).toString().padStart(2, "0")}`
+                                            : "Focus"}
+                                    </Text>
+                                </TouchableOpacity>
+                            )}
 
                             {/* Priority pill */}
                             {priorityCfg && (

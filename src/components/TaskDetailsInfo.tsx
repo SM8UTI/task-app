@@ -98,15 +98,53 @@ export default function TaskDetailsInfo({ task, onClose, onAdvanceStatus, onDele
         <View style={styles.container}>
             {/* ── Top row: date + priority + status ─────────── */}
             <View style={styles.topRow}>
-                <View style={styles.datePill}>
-                    <Calendar1 size={14} color={theme.background + "80"} />
-                    <Text style={styles.datePillText}>
-                        {dateLabel}, {timeStr}
-                    </Text>
+
+
+                <View style={{
+                    flexDirection: "column",
+                    gap: 2,
+                }}>
+                    <Text style={styles.title}>{task.title}</Text>
+                    <View style={{
+                        flexDirection: "row",
+                        gap: 6,
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        width: "100%"
+                    }}>
+                        <View style={styles.datePill}>
+                            <Calendar1 size={14} color={theme.background + "80"} />
+                            <Text style={styles.datePillText}>
+                                {dateLabel}, {timeStr}
+                            </Text>
+                        </View>
+                        {/* Priority pill */}
+                        {priorityCfg && (
+                            <View style={[styles.priorityPill, { backgroundColor: priorityCfg.bg }]}>
+                                <View style={[styles.priorityDot, { backgroundColor: priorityCfg.dot }]} />
+                                <Text style={[styles.priorityLabel, { color: priorityCfg.dot }]}>
+                                    {priorityCfg.label}
+                                </Text>
+                            </View>
+                        )}
+                    </View>
                 </View>
 
-                <View style={{ flexDirection: "row", gap: 6, alignItems: "center" }}>
-                    {/* Timer Pill */}
+
+
+
+            </View>
+            <View style={{
+                backgroundColor: theme.background + "10",
+                padding: 24,
+                borderRadius: 12,
+                marginBottom: 12,
+            }}>
+                <Text style={styles.description}>{task.description}</Text>
+            </View>
+            <View style={{ flexDirection: "row", gap: 6, alignItems: "center", marginBottom: 24 }}>
+                {/* Timer Pill */}
+                {task.status !== "completed" && (
                     <TouchableOpacity
                         activeOpacity={0.8}
                         onPress={() => {
@@ -130,30 +168,20 @@ export default function TaskDetailsInfo({ task, onClose, onAdvanceStatus, onDele
                             </Text>
                         </View>
                     </TouchableOpacity>
+                )}
 
-                    {/* Status pill */}
-                    <View style={[styles.priorityPill, { backgroundColor: statusCfg.bg }]}>
-                        <View style={[styles.priorityDot, { backgroundColor: statusCfg.color }]} />
-                        <Text style={[styles.priorityLabel, { color: statusCfg.color }]}>
-                            {statusCfg.label}
-                        </Text>
-                    </View>
-
-                    {/* Priority pill */}
-                    {priorityCfg && (
-                        <View style={[styles.priorityPill, { backgroundColor: priorityCfg.bg }]}>
-                            <View style={[styles.priorityDot, { backgroundColor: priorityCfg.dot }]} />
-                            <Text style={[styles.priorityLabel, { color: priorityCfg.dot }]}>
-                                {priorityCfg.label}
-                            </Text>
-                        </View>
-                    )}
+                {/* Status pill */}
+                <View style={[styles.priorityPill, { backgroundColor: statusCfg.bg }]}>
+                    <View style={[styles.priorityDot, { backgroundColor: statusCfg.color }]} />
+                    <Text style={[styles.priorityLabel, { color: statusCfg.color }]}>
+                        {statusCfg.label}
+                    </Text>
                 </View>
+
+
             </View>
 
-            {/* ── Title & Description ───────────────────────── */}
-            <Text style={styles.title}>{task.title}</Text>
-            <Text style={styles.description}>{task.description}</Text>
+
 
             {/* ── Tags ─────────────────────────────────────── */}
             {task.tag && task.tag.length > 0 && (
@@ -239,9 +267,9 @@ const styles = StyleSheet.create({
         lineHeight: 40,
     },
     description: {
-        fontFamily: theme.fonts[700],
-        fontSize: 24,
-        color: theme.background,
+        fontFamily: theme.fonts[600],
+        fontSize: 18,
+        color: theme.background + "90",
         marginBottom: 20,
         lineHeight: 36,
     },

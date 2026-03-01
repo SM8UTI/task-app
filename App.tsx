@@ -1,6 +1,7 @@
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { JSX } from "react";
+import { StatusBar } from "react-native";
 import TabNavigator from "./src/navigation/TabNavigator";
 import FocusSetupScreen from "./src/screens/FocusSetupScreen";
 import FocusScreen from "./src/screens/FocusScreen";
@@ -22,6 +23,7 @@ const Stack = createNativeStackNavigator();
 export default function App(): JSX.Element {
   return (
     <TimerProvider>
+      <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
       <NavigationContainer theme={AppTheme}>
         <Stack.Navigator screenOptions={{ headerShown: false, contentStyle: { backgroundColor: customTheme.background } }}>
           <Stack.Screen name="MainTabs" component={TabNavigator} />
