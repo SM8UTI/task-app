@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>A premium React Native task manager</strong><br/>
-  Daily streak tracking · Priority filtering · Swipe gestures · Calendar heatmap
+  Daily streak tracking · Pomodoro focus timer · Swipe gestures · Interactive calendar analytics
 </p>
 
 <p align="center">
@@ -22,9 +22,10 @@
 
 | Screen       | Route      | Description                                                                            |
 | ------------ | ---------- | -------------------------------------------------------------------------------------- |
-| **Home**     | `Home`     | Good-morning greeting, live streak counter, today's high/medium priority task cards    |
+| **Home**     | `Home`     | Good-morning greeting, live streak counter, active timer widgets, and priority tasks   |
 | **Tasks**    | `Tasks`    | Full task list with To-Do / In-Progress / Completed tabs, date sections, swipe actions |
-| **Calendar** | `Calendar` | Monthly heatmap grid, streak hero card, daily stats (Perfect Days, Tasks Done)         |
+| **Calendar** | `Calendar` | Monthly log grid, active day bar graph, streak hero card, and precise task stats       |
+| **Focus**    | `Focus`    | Dedicated immersive Pomodoro-style timer tied specifically to active tasks             |
 
 ---
 
@@ -37,7 +38,11 @@
 - **Offline-First Persistence Engine**: `AsyncStorage` backs the entire app (`@myapp_tasks_data`). Sorting handles JSON date repopulation safely. Data is strictly offline—no backend required.
 - **Smart UI Overflow**: Tasks render up to **2 tags** natively on minimalist cards. Any overflow elegantly maps to a `+N` badge indicating remaining contexts.
 
-### 🔄 Action Lifecycle & Gesture System
+### 🍅 Native Focus Timer (Pomodoro)
+
+- **Deep Integration**: Every active task card provides a native **"Focus" pill** capable of initiating a timed session.
+- **Floating Context**: Moving away from the active `FocusScreen` shrinks the running timer down into a floating badge directly on the task card throughout the app.
+- **Fluid Exits**: Mark tasks done directly from the Focus session; or easily exit early maintaining smooth data integrity globally.
 
 ```
  ┌────────┐   swipe right   ┌─────────────┐   swipe right   ┌───────────┐
@@ -74,14 +79,14 @@
 - **Forgiving Empty Days**: Rest days (zero tasks scheduled) passively bridge your streak. They never sever it.
 - **Punishing Incompletes**: One single abandoned task resets the localized `@myapp_streak_log` to zero.
 
-### 📅 Calendar Heatmap Analytics
+### 📅 Interactive Activity Analytics
 
 - **Grid Visualization**: A visual matrix analyzing historical performance:
   - 🟢 **Green** (`#34D399`): Flawless perfection (All tasks done).
   - 🟡 **Yellow** (`#FFCA28`): Partial efforts.
   - 🔴 **Red** (`#FF5757`): Failed days.
   - ⬜ **Dim**: Future dates or rest days.
-- **Infinite Browsing**: Traverse months safely evaluating previous logs.
+- **Dynamic Bar Graph**: A beautifully fluid, auto-scaling bar graph directly mapping monthly consistency. Interactively touch any bar to render specific day volume statistics inline.
 - **Meta Stats Row**: Compiles raw analytics natively: **Current Day Streak**, **Total Perfect Days**, and your precise timeline of **Tasks Done**.
 
 ---
