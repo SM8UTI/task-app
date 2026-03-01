@@ -1,4 +1,4 @@
-package com.myapppractice
+package com.taskflow_sm8uti
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

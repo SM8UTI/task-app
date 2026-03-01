@@ -17,6 +17,7 @@ export default function TabNavigator() {
     return (
         <Tab.Navigator screenOptions={{
             headerShown: false,
+            animation: "shift",
             tabBarActiveTintColor: theme.text,
             tabBarInactiveTintColor: theme.text + "80",
             tabBarStyle: {

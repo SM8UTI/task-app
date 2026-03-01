@@ -9,6 +9,7 @@ import { useState, useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { WidgetPreview } from "react-native-android-widget";
 import { TaskWidgetAndroid } from "../widget/TaskWidget";
+import StartTimerList from "../layouts/homeScreen/StartTimerList";
 
 const TASKS_KEY = "@myapp_tasks_data";
 
@@ -63,7 +64,7 @@ export default function HomeScreen() {
             >
                 <HeaderHeroScreen streak={currentStreak} />
                 <TodayRecentTasks />
-
+                <StartTimerList />
             </ScrollView>
         </SafeAreaView>
     );

@@ -274,20 +274,6 @@ function TodayRecentTasks() {
                 </View>
             </View>
 
-            {/* ── Task List ── */}
-            <View style={{ flexDirection: "column", gap: 12, marginTop: 12 }}>
-                {displayTasks.map((task, index) => (
-                    <TaskCard
-                        key={task.id}
-                        task={task}
-                        bgColor={taskColors[index % taskColors.length]}
-                        onPress={() => openTaskSheet(task)}
-                        onAdvanceStatus={() => toggleTaskComplete(task.id)}
-                        onDelete={() => deleteTask(task.id)}
-                    />
-                ))}
-            </View>
-
             {/* ── Bottom Sheet Modal ── */}
             <Modal
                 visible={sheetVisible}

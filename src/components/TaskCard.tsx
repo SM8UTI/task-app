@@ -15,7 +15,10 @@ import {
     Check,
     ChevronsRight,
     Trash2,
+    Play
 } from "lucide-react-native";
+import { useTimer } from "../context/TimerContext";
+import { useNavigation } from "@react-navigation/native";
 
 // ─── Task type ───────────────────────────────────────────────────────────────
 export type Task = {
@@ -101,6 +104,8 @@ export default function TaskCard({
     const pan = useRef(new Animated.Value(0)).current;
     const [dismissed, setDismissed] = useState(false);
     const [showStatusMenu, setShowStatusMenu] = useState(false);
+    const { timeLeft, isActive, activeTaskId } = useTimer();
+    const navigation = useNavigation<any>();
 
     // ── Status navigation ─────────────────────────────────────────────────
     const currentIdx = STATUS_ORDER.indexOf(task.status as TaskStatus);
@@ -239,15 +244,37 @@ export default function TaskCard({
                             )}
                         </View>
 
-                        {/* Priority pill */}
-                        {priorityCfg && (
-                            <View style={{ backgroundColor: theme.white, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 12, flexDirection: "row", alignItems: "center", gap: 5 }}>
-                                <View style={{ width: 7, height: 7, borderRadius: 4, backgroundColor: priorityCfg.dot }} />
-                                <Text style={{ fontFamily: theme.fonts[500], fontSize: 12, color: theme.background }}>
-                                    {priorityCfg.label.split(" ")[0]}
+                        <View style={{ flexDirection: "row", gap: 6, alignItems: "center" }}>
+                            {/* Timer Pill */}
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={() => {
+                                    if (isActive && activeTaskId === task.id) {
+                                        navigation.navigate("FocusScreen", { taskId: task.id, duration: Math.floor(timeLeft / 60) });
+                                    } else {
+                                        navigation.navigate("FocusSetupScreen", { taskId: task.id });
+                                    }
+                                }}
+                                style={{ backgroundColor: isActive && activeTaskId === task.id ? theme.white : theme.white + "30", paddingHorizontal: 8, paddingVertical: 5, borderRadius: 12, flexDirection: "row", alignItems: "center", gap: 4 }}
+                            >
+                                <Play fill={isActive && activeTaskId === task.id ? theme.background : theme.white} color={isActive && activeTaskId === task.id ? theme.background : theme.white} size={10} />
+                                <Text style={{ fontFamily: theme.fonts[700], fontSize: 11, color: isActive && activeTaskId === task.id ? theme.background : theme.white }}>
+                                    {isActive && activeTaskId === task.id
+                                        ? `${Math.floor(timeLeft / 60)}:${(timeLeft % 60).toString().padStart(2, "0")}`
+                                        : "Focus"}
                                 </Text>
-                            </View>
-                        )}
+                            </TouchableOpacity>
+
+                            {/* Priority pill */}
+                            {priorityCfg && (
+                                <View style={{ backgroundColor: theme.white, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 12, flexDirection: "row", alignItems: "center", gap: 5 }}>
+                                    <View style={{ width: 7, height: 7, borderRadius: 4, backgroundColor: priorityCfg.dot }} />
+                                    <Text style={{ fontFamily: theme.fonts[500], fontSize: 12, color: theme.background }}>
+                                        {priorityCfg.label.split(" ")[0]}
+                                    </Text>
+                                </View>
+                            )}
+                        </View>
                     </View>
 
                     {/* ── Long-press status menu ────────── */}

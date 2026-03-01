@@ -6,10 +6,14 @@ import {
     CheckCircle,
     ChevronsRight,
     Trash2,
+    Play,
 } from "lucide-react-native";
 import theme from "../data/color-theme";
 import AnimatedIconButton from "./AnimatedIconButton";
 import { Task, PRIORITY_CONFIG } from "./TaskCard";
+import { useTimer } from "../context/TimerContext";
+import { useNavigation } from "@react-navigation/native";
+import { TouchableOpacity } from "react-native";
 
 // ─── Status cycling helpers ────────────────────────────────────────────────
 const STATUS_ORDER = ["to-do", "in-progress", "completed"] as const;
@@ -83,6 +87,8 @@ export default function TaskDetailsInfo({ task, onClose, onAdvanceStatus, onDele
         hour12: true,
     });
     const dateLabel = getDateLabel(task.dueDate);
+    const { timeLeft, isActive, activeTaskId } = useTimer();
+    const navigation = useNavigation<any>();
 
     const advanceCfg = getAdvanceCfg(task.status);
     const priorityCfg = PRIORITY_CONFIG[task.priority] ?? null;
@@ -100,6 +106,31 @@ export default function TaskDetailsInfo({ task, onClose, onAdvanceStatus, onDele
                 </View>
 
                 <View style={{ flexDirection: "row", gap: 6, alignItems: "center" }}>
+                    {/* Timer Pill */}
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        onPress={() => {
+                            // First close the modal, then navigate
+                            onClose();
+                            setTimeout(() => {
+                                if (isActive && activeTaskId === task.id) {
+                                    navigation.navigate("FocusScreen", { taskId: task.id, duration: Math.floor(timeLeft / 60) });
+                                } else {
+                                    navigation.navigate("FocusSetupScreen", { taskId: task.id });
+                                }
+                            }, 300); // Wait for modal to close
+                        }}
+                    >
+                        <View style={[styles.priorityPill, { backgroundColor: isActive && activeTaskId === task.id ? theme.primary[4] : theme.background + "10" }]}>
+                            <Play fill={isActive && activeTaskId === task.id ? theme.white : theme.background + "80"} color={isActive && activeTaskId === task.id ? theme.white : theme.background + "80"} size={10} />
+                            <Text style={[styles.priorityLabel, { color: isActive && activeTaskId === task.id ? theme.white : theme.background + "80", fontSize: 13, marginLeft: 2 }]}>
+                                {isActive && activeTaskId === task.id
+                                    ? `${Math.floor(timeLeft / 60)}:${(timeLeft % 60).toString().padStart(2, "0")}`
+                                    : "Focus"}
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+
                     {/* Status pill */}
                     <View style={[styles.priorityPill, { backgroundColor: statusCfg.bg }]}>
                         <View style={[styles.priorityDot, { backgroundColor: statusCfg.color }]} />
