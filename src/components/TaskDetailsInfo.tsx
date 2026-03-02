@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text } from "react-native";
 import {
     CalendarClock,
     Calendar1,
@@ -95,16 +95,29 @@ export default function TaskDetailsInfo({ task, onClose, onAdvanceStatus, onDele
     const statusCfg = STATUS_CONFIG[task.status] ?? STATUS_CONFIG["to-do"];
 
     return (
-        <View style={styles.container}>
+        <View style={{ paddingHorizontal: 24, paddingBottom: 8, paddingTop: 20 }}>
             {/* ── Top row: date + priority + status ─────────── */}
-            <View style={styles.topRow}>
+            <View style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: 20,
+                flexWrap: "wrap",
+                gap: 12,
+            }}>
 
 
                 <View style={{
                     flexDirection: "column",
                     gap: 2,
                 }}>
-                    <Text style={styles.title}>{task.title}</Text>
+                    <Text style={{
+                        fontFamily: theme.fonts[500],
+                        fontSize: 16,
+                        color: theme.background + "90",
+                        marginBottom: 2,
+                        lineHeight: 40,
+                    }}>{task.title}</Text>
                     <View style={{
                         flexDirection: "row",
                         gap: 6,
@@ -112,17 +125,42 @@ export default function TaskDetailsInfo({ task, onClose, onAdvanceStatus, onDele
                         justifyContent: "space-between",
                         width: "100%"
                     }}>
-                        <View style={styles.datePill}>
+                        <View style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            gap: 6,
+                        }}>
                             <Calendar1 size={14} color={theme.background + "80"} />
-                            <Text style={styles.datePillText}>
+                            <Text style={{
+                                fontFamily: theme.fonts[500],
+                                fontSize: 14,
+                                color: theme.background + "88",
+                            }}>
                                 {dateLabel}, {timeStr}
                             </Text>
                         </View>
                         {/* Priority pill */}
                         {priorityCfg && (
-                            <View style={[styles.priorityPill, { backgroundColor: priorityCfg.bg }]}>
-                                <View style={[styles.priorityDot, { backgroundColor: priorityCfg.dot }]} />
-                                <Text style={[styles.priorityLabel, { color: priorityCfg.dot }]}>
+                            <View style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                gap: 5,
+                                paddingHorizontal: 10,
+                                paddingVertical: 5,
+                                borderRadius: 20,
+                                backgroundColor: priorityCfg.bg
+                            }}>
+                                <View style={{
+                                    width: 7,
+                                    height: 7,
+                                    borderRadius: 4,
+                                    backgroundColor: priorityCfg.dot
+                                }} />
+                                <Text style={{
+                                    fontFamily: theme.fonts[600],
+                                    fontSize: 12,
+                                    color: priorityCfg.dot
+                                }}>
                                     {priorityCfg.label}
                                 </Text>
                             </View>
@@ -140,7 +178,12 @@ export default function TaskDetailsInfo({ task, onClose, onAdvanceStatus, onDele
                 borderRadius: 12,
                 marginBottom: 12,
             }}>
-                <Text style={styles.description}>{task.description}</Text>
+                <Text style={{
+                    fontFamily: theme.fonts[600],
+                    fontSize: 18,
+                    color: theme.background + "90",
+                    lineHeight: 32,
+                }}>{task.description}</Text>
             </View>
             <View style={{ flexDirection: "row", gap: 6, alignItems: "center", marginBottom: 24 }}>
                 {/* Timer Pill */}
@@ -159,9 +202,22 @@ export default function TaskDetailsInfo({ task, onClose, onAdvanceStatus, onDele
                             }, 300); // Wait for modal to close
                         }}
                     >
-                        <View style={[styles.priorityPill, { backgroundColor: isActive && activeTaskId === task.id ? theme.primary[4] : theme.background + "10" }]}>
+                        <View style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            gap: 5,
+                            paddingHorizontal: 10,
+                            paddingVertical: 5,
+                            borderRadius: 20,
+                            backgroundColor: isActive && activeTaskId === task.id ? theme.primary[4] : theme.background + "10"
+                        }}>
                             <Play fill={isActive && activeTaskId === task.id ? theme.white : theme.background + "80"} color={isActive && activeTaskId === task.id ? theme.white : theme.background + "80"} size={10} />
-                            <Text style={[styles.priorityLabel, { color: isActive && activeTaskId === task.id ? theme.white : theme.background + "80", fontSize: 13, marginLeft: 2 }]}>
+                            <Text style={{
+                                fontFamily: theme.fonts[600],
+                                fontSize: 13,
+                                color: isActive && activeTaskId === task.id ? theme.white : theme.background + "80",
+                                marginLeft: 2
+                            }}>
                                 {isActive && activeTaskId === task.id
                                     ? `${Math.floor(timeLeft / 60)}:${(timeLeft % 60).toString().padStart(2, "0")}`
                                     : "Focus"}
@@ -171,13 +227,29 @@ export default function TaskDetailsInfo({ task, onClose, onAdvanceStatus, onDele
                 )}
 
                 {/* Status pill */}
-                <View style={[styles.priorityPill, { backgroundColor: statusCfg.bg }]}>
-                    <View style={[styles.priorityDot, { backgroundColor: statusCfg.color }]} />
-                    <Text style={[styles.priorityLabel, { color: statusCfg.color }]}>
+                <View style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 5,
+                    paddingHorizontal: 10,
+                    paddingVertical: 5,
+                    borderRadius: 20,
+                    backgroundColor: statusCfg.bg
+                }}>
+                    <View style={{
+                        width: 7,
+                        height: 7,
+                        borderRadius: 4,
+                        backgroundColor: statusCfg.color
+                    }} />
+                    <Text style={{
+                        fontFamily: theme.fonts[600],
+                        fontSize: 12,
+                        color: statusCfg.color
+                    }}>
                         {statusCfg.label}
                     </Text>
                 </View>
-
 
             </View>
 
@@ -185,29 +257,70 @@ export default function TaskDetailsInfo({ task, onClose, onAdvanceStatus, onDele
 
             {/* ── Tags ─────────────────────────────────────── */}
             {task.tag && task.tag.length > 0 && (
-                <View style={styles.tagRow}>
+                <View style={{
+                    flexDirection: "row",
+                    gap: 8,
+                    marginBottom: 24,
+                    flexWrap: "wrap",
+                    borderTopWidth: 1,
+                    borderColor: theme.background + "10",
+                    paddingTop: 16,
+                }}>
                     {task.tag.map((tag: string, idx: number) => (
-                        <Text key={idx} style={styles.tagText}>#{tag}</Text>
+                        <Text key={idx} style={{
+                            fontFamily: theme.fonts[500],
+                            fontSize: 15,
+                            color: theme.background + "80",
+                            textTransform: "capitalize",
+                        }}>#{tag}</Text>
                     ))}
                 </View>
             )}
 
             {/* ── Action buttons ───────────────────────────── */}
-            <View style={styles.actionRow}>
+            <View style={{
+                flexDirection: "row",
+                gap: 12,
+                borderTopWidth: 1,
+                borderColor: theme.background + "10",
+                paddingTop: 20,
+            }}>
                 {/* Advance status button */}
                 <View style={{ flex: 1 }}>
                     <AnimatedIconButton
-                        style={[styles.advanceBtn, { backgroundColor: advanceCfg.color }]}
+                        style={{
+                            width: "100%",
+                            height: 64,
+                            borderRadius: 120,
+                            flexDirection: "row",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            gap: 10,
+                            backgroundColor: advanceCfg.color
+                        }}
                         onPress={onAdvanceStatus}
                     >
                         {advanceCfg.Icon}
-                        <Text style={styles.advanceBtnLabel}>{advanceCfg.label}</Text>
+                        <Text style={{
+                            fontFamily: theme.fonts[500],
+                            fontSize: 15,
+                            color: theme.white,
+                        }}>{advanceCfg.label}</Text>
                     </AnimatedIconButton>
                 </View>
 
                 {/* Delete button */}
                 <AnimatedIconButton
-                    style={styles.deleteBtn}
+                    style={{
+                        width: 64,
+                        height: 64,
+                        borderRadius: 32,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        borderWidth: 1,
+                        borderColor: theme.error + "30",
+                        backgroundColor: theme.error + "18",
+                    }}
                     onPress={onDelete}
                 >
                     <Trash2 color={theme.error} size={24} />
@@ -216,107 +329,3 @@ export default function TaskDetailsInfo({ task, onClose, onAdvanceStatus, onDele
         </View>
     );
 }
-
-// ─── Styles ─────────────────────────────────────────────────────────────────
-const styles = StyleSheet.create({
-    container: {
-        paddingHorizontal: 24,
-        paddingBottom: 8,
-        paddingTop: 20,
-    },
-    topRow: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        marginBottom: 20,
-        flexWrap: "wrap",
-        gap: 12,
-    },
-    datePill: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 6,
-    },
-    datePillText: {
-        fontFamily: theme.fonts[500],
-        fontSize: 14,
-        color: theme.background + "88",
-    },
-    priorityPill: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 5,
-        paddingHorizontal: 10,
-        paddingVertical: 5,
-        borderRadius: 20,
-    },
-    priorityDot: {
-        width: 7,
-        height: 7,
-        borderRadius: 4,
-    },
-    priorityLabel: {
-        fontFamily: theme.fonts[600],
-        fontSize: 12,
-    },
-    title: {
-        fontFamily: theme.fonts[500],
-        fontSize: 16,
-        color: theme.background + "90",
-        marginBottom: 2,
-        lineHeight: 40,
-    },
-    description: {
-        fontFamily: theme.fonts[600],
-        fontSize: 18,
-        color: theme.background + "90",
-        marginBottom: 20,
-        lineHeight: 36,
-    },
-    tagRow: {
-        flexDirection: "row",
-        gap: 8,
-        marginBottom: 24,
-        flexWrap: "wrap",
-        borderTopWidth: 1,
-        borderColor: theme.background + "10",
-        paddingTop: 16,
-    },
-    tagText: {
-        fontFamily: theme.fonts[500],
-        fontSize: 15,
-        color: theme.background + "80",
-        textTransform: "capitalize",
-    },
-    actionRow: {
-        flexDirection: "row",
-        gap: 12,
-        borderTopWidth: 1,
-        borderColor: theme.background + "10",
-        paddingTop: 20,
-    },
-    advanceBtn: {
-        width: "100%",
-        height: 64,
-        borderRadius: 120,
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-        gap: 10,
-    },
-    advanceBtnLabel: {
-        fontFamily: theme.fonts[500],
-        fontSize: 15,
-        color: theme.white,
-    },
-    deleteBtn: {
-        width: 64,
-        height: 64,
-        borderRadius: 32,
-        justifyContent: "center",
-        alignItems: "center",
-        borderWidth: 1,
-        borderColor: theme.error + "30",
-        backgroundColor: theme.error + "18",
-    },
-});

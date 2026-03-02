@@ -31,17 +31,34 @@ export function useTaskManager() {
       const storedTasks = await AsyncStorage.getItem(TASKS_STORAGE_KEY);
       if (storedTasks) {
         const parsed = JSON.parse(storedTasks);
+        let migrated = false;
         // Reconstruct Date objects after JSON parse
-        const formattedTasks = parsed.map((t: any) => ({
-          ...t,
-          dueDate: new Date(t.dueDate),
-          createdAt: new Date(t.createdAt),
-          updatedAt: new Date(t.updatedAt),
-        }));
+        const formattedTasks = parsed.map((t: any) => {
+          let tColorIndex = t.colorIndex;
+          if (tColorIndex === undefined) {
+            tColorIndex = Math.floor(Math.random() * 3);
+            migrated = true;
+          }
+          return {
+            ...t,
+            colorIndex: tColorIndex,
+            dueDate: new Date(t.dueDate),
+            createdAt: new Date(t.createdAt),
+            updatedAt: new Date(t.updatedAt),
+          };
+        });
         // Sort by newest first
         formattedTasks.sort(
           (a: any, b: any) => b.createdAt.getTime() - a.createdAt.getTime(),
         );
+
+        if (migrated) {
+          await AsyncStorage.setItem(
+            TASKS_STORAGE_KEY,
+            JSON.stringify(formattedTasks),
+          );
+        }
+
         setTasks(formattedTasks);
       } else {
         setTasks([]);
@@ -65,6 +82,7 @@ export function useTaskManager() {
       status: data.status,
       dueDate: data.dueDate,
       tag: data.tag,
+      colorIndex: Math.floor(Math.random() * 3),
     };
 
     const updatedTasks = [newTask, ...tasks];

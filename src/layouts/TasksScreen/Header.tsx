@@ -115,6 +115,10 @@ export default function HeaderTaskScreen({
                 flexDirection: "row",
                 gap: 8,
                 marginTop: 16,
+                marginBottom: 12,
+                borderBottomWidth: 1,
+                borderBottomColor: theme.text + "10",
+                paddingBottom: 12,
             }}>
                 {
                     [

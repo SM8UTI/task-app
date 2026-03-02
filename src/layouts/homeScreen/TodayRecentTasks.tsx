@@ -45,7 +45,8 @@ function TodayRecentTasks() {
             category: "work",
             status: data.status,
             dueDate: data.dueDate,
-            tag: data.tag
+            tag: data.tag,
+            colorIndex: Math.floor(Math.random() * 3),
         };
 
         const updatedTasks = [newTask, ...tasks];
@@ -72,14 +73,27 @@ function TodayRecentTasks() {
             const storedTasks = await AsyncStorage.getItem("@myapp_tasks_data");
             if (storedTasks) {
                 const parsed = JSON.parse(storedTasks);
-                const formattedTasks = parsed.map((t: any) => ({
-                    ...t,
-                    dueDate: new Date(t.dueDate),
-                    createdAt: new Date(t.createdAt),
-                    updatedAt: new Date(t.updatedAt)
-                }));
+                let migrated = false;
+                const formattedTasks = parsed.map((t: any) => {
+                    let tColorIndex = t.colorIndex;
+                    if (tColorIndex === undefined) {
+                        tColorIndex = Math.floor(Math.random() * 3);
+                        migrated = true;
+                    }
+                    return {
+                        ...t,
+                        colorIndex: tColorIndex,
+                        dueDate: new Date(t.dueDate),
+                        createdAt: new Date(t.createdAt),
+                        updatedAt: new Date(t.updatedAt)
+                    }
+                });
                 formattedTasks.sort((a: any, b: any) => b.createdAt.getTime() - a.createdAt.getTime());
                 setTasks(formattedTasks);
+
+                if (migrated) {
+                    await AsyncStorage.setItem("@myapp_tasks_data", JSON.stringify(formattedTasks));
+                }
             } else {
                 setTasks([]);
             }

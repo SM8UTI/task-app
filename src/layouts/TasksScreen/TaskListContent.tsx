@@ -169,7 +169,7 @@ export default function TaskListContent({
                                     <TaskCard
                                         key={task.id}
                                         task={task}
-                                        bgColor={CARD_COLORS[task.id % CARD_COLORS.length]}
+                                        bgColor={CARD_COLORS[task.colorIndex !== undefined ? (task.colorIndex % CARD_COLORS.length) : (task.id % CARD_COLORS.length)]}
                                         onPress={() => onOpenTask(task)}
                                         onAdvanceStatus={() => onAdvanceStatus(task.id)}
                                         onSetStatus={(s, d) => onSetStatus(task.id, s, d)}
