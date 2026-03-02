@@ -5,6 +5,10 @@
 <h1 align="center">TaskFlow</h1>
 
 <p align="center">
+  <img src="featuredbanner.png" alt="TaskFlow Featured Banner" width="100%" style="border-radius: 24px;" />
+</p>
+
+<p align="center">
   <strong>A premium React Native task manager</strong><br/>
   Daily streak tracking · Pomodoro focus timer · Swipe gestures · Interactive calendar analytics
 </p>
