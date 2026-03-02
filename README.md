@@ -220,6 +220,16 @@ cd ios && pod install && cd ..
 npx react-native run-ios
 ```
 
+### 5 · Build Android Release (APK)
+
+```bash
+cd android
+./gradlew clean
+./gradlew assembleRelease
+```
+
+> **Note**: The generated APK will be available at `android/app/build/outputs/apk/release/app-release.apk`
+
 ---
 
 ## 📐 Design System
