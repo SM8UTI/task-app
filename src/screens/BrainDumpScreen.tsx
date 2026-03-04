@@ -1,8 +1,8 @@
 import { View, Text, TextInput, ScrollView, Pressable, KeyboardAvoidingView, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Trash2, Plus, Lightbulb } from "lucide-react-native";
+import { Trash2, Plus, Brain, Sparkles } from "lucide-react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { encryptObject, decryptObject } from "../utils/security";
 import theme from "../data/color-theme";
@@ -22,8 +22,8 @@ const STORAGE_KEY = "@taskflow_braindump";
 export default function BrainDumpScreen() {
     const [entries, setEntries] = useState<DumpEntry[]>([]);
     const [input, setInput] = useState("");
+    const [pressingId, setPressingId] = useState<number | null>(null);
 
-    // ── Load from storage on focus ──
     useFocusEffect(
         useCallback(() => {
             loadEntries();
@@ -73,20 +73,17 @@ export default function BrainDumpScreen() {
         persist(updated);
     };
 
-    const formatTime = (iso: string) => {
-        const d = new Date(iso);
-        return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-    };
+    const formatTime = (iso: string) =>
+        new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
     const formatDate = (iso: string) => {
         const d = new Date(iso);
-        const today = new Date();
+        const t = new Date();
         const isToday =
-            d.getDate() === today.getDate() &&
-            d.getMonth() === today.getMonth() &&
-            d.getFullYear() === today.getFullYear();
-        if (isToday) return "Today";
-        return d.toLocaleDateString([], { month: "short", day: "numeric" });
+            d.getDate() === t.getDate() &&
+            d.getMonth() === t.getMonth() &&
+            d.getFullYear() === t.getFullYear();
+        return isToday ? "Today" : d.toLocaleDateString([], { month: "short", day: "numeric" });
     };
 
     return (
@@ -130,34 +127,43 @@ export default function BrainDumpScreen() {
                     </Text>
                 </View>
 
-                {/* ── Input area ─────────────────────────────── */}
+                {/* ── Input card ─────────────────────────────── */}
+                {/* Matches: theme.text + "08", borderRadius 20, borderWidth 1, borderColor theme.text + "10" */}
                 <View
                     style={{
                         marginHorizontal: theme.padding.paddingMainX,
                         marginTop: 16,
                         backgroundColor: theme.text + "08",
-                        borderRadius: 16,
+                        borderRadius: 20,
                         borderWidth: 1,
-                        borderColor: theme.text + "12",
+                        borderColor: theme.text + "10",
                         flexDirection: "row",
                         alignItems: "flex-end",
-                        gap: 10,
-                        paddingHorizontal: 14,
-                        paddingVertical: 10,
+                        gap: 12,
+                        paddingHorizontal: 16,
+                        paddingVertical: 12,
                     }}
                 >
-                    <Lightbulb
-                        size={18}
-                        color={theme.primary[1]}
-                        strokeWidth={2}
-                        style={{ marginBottom: 10 }}
-                    />
+                    <View
+                        style={{
+                            width: 34,
+                            height: 34,
+                            borderRadius: 10,
+                            backgroundColor: theme.primary[1] + "18",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            marginBottom: 2,
+                        }}
+                    >
+                        <Sparkles size={16} color={theme.primary[1]} strokeWidth={2} />
+                    </View>
+
                     <TextInput
                         value={input}
                         onChangeText={setInput}
                         onSubmitEditing={addEntry}
                         placeholder="What's on your mind?"
-                        placeholderTextColor={theme.text + "35"}
+                        placeholderTextColor={theme.text + "30"}
                         multiline
                         returnKeyType="done"
                         blurOnSubmit
@@ -172,42 +178,43 @@ export default function BrainDumpScreen() {
                             paddingBottom: 10,
                         }}
                     />
+
                     <Pressable
                         onPress={addEntry}
                         style={({ pressed }) => ({
-                            width: 36,
-                            height: 36,
-                            borderRadius: 10,
+                            width: 38,
+                            height: 38,
+                            borderRadius: 12,
                             alignItems: "center",
                             justifyContent: "center",
                             backgroundColor: input.trim()
                                 ? pressed
                                     ? theme.primary[1] + "CC"
                                     : theme.primary[1]
-                                : theme.text + "15",
+                                : theme.text + "12",
                             marginBottom: 2,
                         })}
                     >
                         <Plus
                             size={20}
-                            color={input.trim() ? theme.background : theme.text + "40"}
+                            color={input.trim() ? theme.background : theme.text + "35"}
                             strokeWidth={2.5}
                         />
                     </Pressable>
                 </View>
 
-                {/* ── Entries count ──────────────────────────── */}
+                {/* ── Section label (count) ──────────────────── */}
                 {entries.length > 0 && (
                     <Text
                         style={{
                             fontFamily: theme.fonts[500],
-                            fontSize: 11,
-                            color: theme.text + "40",
+                            fontSize: 12,
+                            color: theme.text + "50",
                             letterSpacing: 0.4,
                             textTransform: "uppercase",
                             paddingHorizontal: theme.padding.paddingMainX,
-                            marginTop: 20,
-                            marginBottom: 8,
+                            marginTop: 24,
+                            marginBottom: 10,
                         }}
                     >
                         {entries.length} thought{entries.length !== 1 ? "s" : ""}
@@ -222,34 +229,36 @@ export default function BrainDumpScreen() {
                     contentContainerStyle={{
                         paddingHorizontal: theme.padding.paddingMainX,
                         paddingBottom: 48,
-                        gap: 8,
+                        gap: 10,
                     }}
                 >
                     {entries.length === 0 ? (
-                        /* Empty state */
+                        /* ── Empty state ───────────────────── */
                         <View
                             style={{
                                 alignItems: "center",
-                                paddingTop: 64,
-                                gap: 12,
+                                paddingTop: 72,
+                                gap: 14,
                             }}
                         >
                             <View
                                 style={{
-                                    width: 72,
-                                    height: 72,
+                                    width: 76,
+                                    height: 76,
                                     borderRadius: 24,
                                     backgroundColor: theme.primary[1] + "15",
+                                    borderWidth: 1,
+                                    borderColor: theme.primary[1] + "20",
                                     alignItems: "center",
                                     justifyContent: "center",
                                 }}
                             >
-                                <Lightbulb size={32} color={theme.primary[1]} strokeWidth={1.5} />
+                                <Brain size={34} color={theme.primary[1]} strokeWidth={1.5} />
                             </View>
                             <Text
                                 style={{
                                     fontFamily: theme.fonts[600],
-                                    fontSize: 16,
+                                    fontSize: 17,
                                     color: theme.text + "60",
                                 }}
                             >
@@ -262,42 +271,49 @@ export default function BrainDumpScreen() {
                                     color: theme.text + "35",
                                     textAlign: "center",
                                     lineHeight: 20,
-                                    maxWidth: 240,
+                                    maxWidth: 220,
                                 }}
                             >
                                 Type a thought above and tap{" "}
-                                <Text style={{ color: theme.primary[1] }}>+</Text> to capture it
+                                <Text style={{ color: theme.primary[1], fontFamily: theme.fonts[600] }}>
+                                    +
+                                </Text>{" "}
+                                to capture it
                             </Text>
                         </View>
                     ) : (
+                        /* ── Entry cards ───────────────────── */
                         entries.map(entry => (
                             <View
                                 key={entry.id}
                                 style={{
-                                    backgroundColor: theme.text + "07",
-                                    borderRadius: 14,
+                                    backgroundColor: theme.text + "08",
+                                    borderRadius: 20,
                                     borderWidth: 1,
-                                    borderColor: theme.text + "0E",
-                                    padding: 14,
+                                    borderColor: theme.text + "10",
+                                    padding: 16,
                                     flexDirection: "row",
                                     alignItems: "flex-start",
-                                    gap: 12,
+                                    gap: 14,
                                 }}
                             >
-                                {/* Accent dot */}
+                                {/* Accent icon badge */}
                                 <View
                                     style={{
-                                        width: 8,
-                                        height: 8,
-                                        borderRadius: 4,
-                                        backgroundColor: theme.primary[1],
-                                        marginTop: 6,
+                                        width: 36,
+                                        height: 36,
+                                        borderRadius: 10,
+                                        backgroundColor: theme.primary[1] + "15",
+                                        alignItems: "center",
+                                        justifyContent: "center",
                                         flexShrink: 0,
                                     }}
-                                />
+                                >
+                                    <Sparkles size={15} color={theme.primary[1]} strokeWidth={2} />
+                                </View>
 
                                 {/* Text + timestamp */}
-                                <View style={{ flex: 1, gap: 4 }}>
+                                <View style={{ flex: 1, gap: 6 }}>
                                     <Text
                                         style={{
                                             fontFamily: theme.fonts[400],
@@ -308,27 +324,54 @@ export default function BrainDumpScreen() {
                                     >
                                         {entry.text}
                                     </Text>
-                                    <Text
+                                    <View
                                         style={{
-                                            fontFamily: theme.fonts[400],
-                                            fontSize: 11,
-                                            color: theme.text + "35",
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                            gap: 6,
                                         }}
                                     >
-                                        {formatDate(entry.createdAt)} · {formatTime(entry.createdAt)}
-                                    </Text>
+                                        <View
+                                            style={{
+                                                width: 4,
+                                                height: 4,
+                                                borderRadius: 2,
+                                                backgroundColor: theme.primary[1] + "60",
+                                            }}
+                                        />
+                                        <Text
+                                            style={{
+                                                fontFamily: theme.fonts[400],
+                                                fontSize: 11,
+                                                color: theme.text + "80",
+                                            }}
+                                        >
+                                            {formatDate(entry.createdAt)} · {formatTime(entry.createdAt)}
+                                        </Text>
+                                    </View>
                                 </View>
 
-                                {/* Delete */}
+                                {/* Delete btn */}
                                 <Pressable
                                     onPress={() => deleteEntry(entry.id)}
-                                    style={({ pressed }) => ({
-                                        padding: 6,
-                                        borderRadius: 8,
-                                        backgroundColor: pressed ? theme.error + "18" : "transparent",
-                                    })}
+                                    onPressIn={() => setPressingId(entry.id)}
+                                    onPressOut={() => setPressingId(null)}
+                                    style={{
+                                        width: 32,
+                                        height: 32,
+                                        borderRadius: 10,
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        backgroundColor: pressingId === entry.id ? theme.error + "18" : theme.text + "08",
+                                        borderWidth: 1,
+                                        borderColor: pressingId === entry.id ? theme.error + "25" : theme.text + "0D",
+                                    }}
                                 >
-                                    <Trash2 size={16} color={theme.text + "35"} strokeWidth={2} />
+                                    <Trash2
+                                        size={14}
+                                        color={pressingId === entry.id ? theme.error : theme.text + "35"}
+                                        strokeWidth={2}
+                                    />
                                 </Pressable>
                             </View>
                         ))
