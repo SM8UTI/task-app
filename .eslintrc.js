@@ -9,4 +9,12 @@ module.exports = {
       { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
     ],
   },
+  overrides: [
+    {
+      files: ['__tests__/**/*', 'jest.setup.js'],
+      env: {
+        jest: true,
+      },
+    },
+  ],
 };
