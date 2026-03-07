@@ -85,6 +85,7 @@ export default function FocusScreen() {
             cancelScheduledFocusCompletion();
             showActiveFocusNotification(taskTitle, true);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isActive]);
 
     // Detect completion when timeLeft hits 0 naturally from an active state
@@ -94,6 +95,7 @@ export default function FocusScreen() {
             handleCompletion();
         }
         prevTimeLeft.current = timeLeft;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [timeLeft, isActive]);
 
     useEffect(() => {
@@ -102,6 +104,7 @@ export default function FocusScreen() {
             duration: 1000,
             useNativeDriver: false,
         }).start();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [timeLeft]);
 
     const handleCompletion = async () => {

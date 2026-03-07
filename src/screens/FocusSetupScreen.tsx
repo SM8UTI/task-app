@@ -51,6 +51,7 @@ export default function FocusSetupScreen() {
             duration: 800,
             useNativeDriver: true,
         }).start();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const startFocus = async () => {

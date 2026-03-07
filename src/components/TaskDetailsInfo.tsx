@@ -19,9 +19,7 @@ import { extractYouTubeId, hideYouTubeUrl } from "../utils/youtube";
 import YouTubePreview from "./YouTubePreview";
 
 // ─── Status cycling helpers ────────────────────────────────────────────────────
-const STATUS_ORDER = ["to-do", "in-progress", "completed"] as const;
-type TaskStatus = (typeof STATUS_ORDER)[number];
-
+// Not using STATUS_ORDER and TaskStatus here as it is only used locally as array iteration keys
 type AdvanceCfg = { label: string; color: string; Icon: React.ReactNode };
 
 const getAdvanceCfg = (status: string): AdvanceCfg => {

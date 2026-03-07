@@ -63,6 +63,7 @@ export default function AddTaskBottomSheet({ visible, onClose, onSave, initialTa
         } else if (isMounted) {
             closeSheet();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [visible, initialTaskData]);
 
     const closeSheet = () => {

@@ -6,7 +6,6 @@ import {
     Animated,
     PanResponder,
     Dimensions,
-    Image,
     Linking,
 } from "react-native";
 import theme from "../data/color-theme";
