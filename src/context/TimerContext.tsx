@@ -38,7 +38,7 @@ export function TimerProvider({ children }: { children: ReactNode }) {
             const dataToSave = customState || stateRef.current;
             const encrypted = encryptObject(dataToSave);
             await AsyncStorage.setItem(TIMER_STORAGE_KEY, encrypted);
-        } catch (error) { }
+        } catch { }
     };
 
     // Initial load
@@ -51,7 +51,7 @@ export function TimerProvider({ children }: { children: ReactNode }) {
                     if (!data) {
                         try {
                             data = JSON.parse(stored);
-                        } catch (e) {
+                        } catch {
                             data = null;
                         }
                     }
@@ -88,7 +88,7 @@ export function TimerProvider({ children }: { children: ReactNode }) {
                         }
                     }
                 }
-            } catch (error) { }
+            } catch { }
         };
         loadTimer();
     }, []);

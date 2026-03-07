@@ -40,6 +40,7 @@ export default function ChooseDestinationBottomSheet({ visible, onClose, onSelec
         } else if (isMounted) {
             closeSheet();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [visible]);
 
     const closeSheet = () => {

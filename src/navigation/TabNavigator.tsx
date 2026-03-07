@@ -3,7 +3,7 @@ import HomeScreen from "../screens/HomeScreen";
 import TaskScreen from "../screens/TaskScreen";
 import BrainDumpScreen from "../screens/BrainDumpScreen";
 import theme from "../data/color-theme";
-import { LayoutDashboard, ListTodo, Lightbulb, Settings, Brain } from "lucide-react-native";
+import { LayoutDashboard, ListTodo, Settings, Brain } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import SettingScreen from "../screens/SettingScreen";
 

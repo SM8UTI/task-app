@@ -27,7 +27,7 @@ export default function GlobalCelebration() {
         } else {
             setShowConfetti(false);
         }
-    }, [completedWhileAway, activeTaskId, tasks]);
+    }, [completedWhileAway, activeTaskId, tasks, setTaskStatus]);
 
     if (!completedWhileAway) return null;
 

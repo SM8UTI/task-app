@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { View, Text, TouchableOpacity, Dimensions, Animated, StyleSheet, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Circle } from "react-native-svg";
-import { Info, Play, Pause, RotateCcw, SkipForward, ArrowLeft, Target, CheckCircle2, PartyPopper } from "lucide-react-native";
+import { Play, Pause, RotateCcw, SkipForward, ArrowLeft, Target, CheckCircle2, PartyPopper } from "lucide-react-native";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import ConfettiCannon from "react-native-confetti-cannon";
 import theme from "../data/color-theme";
@@ -85,6 +85,7 @@ export default function FocusScreen() {
             cancelScheduledFocusCompletion();
             showActiveFocusNotification(taskTitle, true);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isActive]);
 
     // Detect completion when timeLeft hits 0 naturally from an active state
@@ -94,6 +95,7 @@ export default function FocusScreen() {
             handleCompletion();
         }
         prevTimeLeft.current = timeLeft;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [timeLeft, isActive]);
 
     useEffect(() => {
@@ -102,6 +104,7 @@ export default function FocusScreen() {
             duration: 1000,
             useNativeDriver: false,
         }).start();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [timeLeft]);
 
     const handleCompletion = async () => {

@@ -12,7 +12,6 @@ import {
     PanResponder,
     StyleSheet,
     TouchableWithoutFeedback,
-    Dimensions,
     StyleProp,
     ViewStyle,
     KeyboardAvoidingView,
@@ -20,7 +19,7 @@ import {
     Easing,
 } from 'react-native';
 
-const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+
 
 export interface BottomSheetProps {
     /** Height of the bottom sheet */

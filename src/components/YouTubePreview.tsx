@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Image, Pressable, Linking } from "react-native";
-import { Play, Youtube } from "lucide-react-native";
+import { Play } from "lucide-react-native";
 import theme from "../data/color-theme";
 
 type Props = {

@@ -1,10 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
-import { Shield, ShieldCheck, Lock } from 'lucide-react-native';
+import { ShieldCheck } from 'lucide-react-native';
 import theme from '../data/color-theme';
 
 export const PrivacyStatus = () => {
-    const [isSecure, setIsSecure] = React.useState(true);
     const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
     React.useEffect(() => {

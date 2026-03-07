@@ -53,7 +53,7 @@ const groupTasksByDate = (tasks: any[]): TaskGroup[] => {
 
     // Build groups and sort: Today always first, then ascending by date
     return Array.from(groupMap.entries())
-        .map(([label, tasks]) => ({ label, tasks }))
+        .map(([label, groupTasks]) => ({ label, tasks: groupTasks }))
         .sort((a, b) => {
             const aKey = getLabelSortKey(a.label);
             const bKey = getLabelSortKey(b.label);

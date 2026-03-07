@@ -8,7 +8,6 @@ import {
     Target,
     TrendingUp,
     ListTodo,
-    BarChart2,
 } from "lucide-react-native";
 import theme from "../data/color-theme";
 import { useTaskManager } from "../hooks/useTaskManager";
