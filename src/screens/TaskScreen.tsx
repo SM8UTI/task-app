@@ -19,12 +19,8 @@ export default function TaskScreen() {
     // Task data & CRUD
     const {
         tasks,
-        todoCount,
-        inProgressCount,
-        completedCount,
         saveNewTask,
         deleteTask,
-        toggleTaskComplete,
         advanceTaskStatus,
         setTaskStatus,
     } = useTaskManager();

@@ -531,8 +531,8 @@ export default function CalendarScreen() {
                                     color: theme.text,
                                 }}
                             >
-                                {MONTH_NAMES[parseInt(selectedDateKey.split("-")[1]) - 1]}{" "}
-                                {parseInt(selectedDateKey.split("-")[2])},{" "}
+                                {MONTH_NAMES[parseInt(selectedDateKey.split("-")[1], 10) - 1]}{" "}
+                                {parseInt(selectedDateKey.split("-")[2], 10)},{" "}
                                 {selectedDateKey.split("-")[0]}
                             </Text>
                             <Text

@@ -12,7 +12,6 @@ import {
     PanResponder,
     StyleSheet,
     TouchableWithoutFeedback,
-    Dimensions,
     StyleProp,
     ViewStyle,
     KeyboardAvoidingView,

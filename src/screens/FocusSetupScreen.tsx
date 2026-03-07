@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, Text, TouchableOpacity, ScrollView, TextInput, Animated, KeyboardAvoidingView, Platform, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, TextInput, Animated, Platform, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ArrowLeft, Play, Timer } from "lucide-react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -55,7 +55,7 @@ export default function FocusSetupScreen() {
     }, []);
 
     const startFocus = async () => {
-        const mins = parseInt(duration) || 25;
+        const mins = parseInt(duration, 10) || 25;
         let taskColor = null;
         let taskTitle = null;
 

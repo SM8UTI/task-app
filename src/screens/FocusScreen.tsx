@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { View, Text, TouchableOpacity, Dimensions, Animated, StyleSheet, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Circle } from "react-native-svg";
-import { Info, Play, Pause, RotateCcw, SkipForward, ArrowLeft, Target, CheckCircle2, PartyPopper } from "lucide-react-native";
+import { Play, Pause, RotateCcw, SkipForward, ArrowLeft, Target, CheckCircle2, PartyPopper } from "lucide-react-native";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import ConfettiCannon from "react-native-confetti-cannon";
 import theme from "../data/color-theme";

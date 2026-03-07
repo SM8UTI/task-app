@@ -14,7 +14,7 @@ import theme from "../data/color-theme";
 
 // ─── Sub-components ─────────────────────────────────────────────────────────
 
-function SectionHeader({ title, icon: Icon, color }: { title: string; icon: any; color: string }) {
+function SectionHeader({ title }: { title: string; icon: any; color: string }) {
     return (
         <View
             style={{

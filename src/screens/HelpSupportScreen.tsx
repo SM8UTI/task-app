@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Pressable, Linking, Image } from "react-native";
+import { View, Text, ScrollView, Pressable, Linking } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import {
@@ -7,7 +7,6 @@ import {
     Github,
     Globe,
     ExternalLink,
-    HelpCircle,
 } from "lucide-react-native";
 import theme from "../data/color-theme";
 

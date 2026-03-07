@@ -1,37 +1,16 @@
-import { ScrollView, View, Text } from "react-native";
+import { ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import theme from "../data/color-theme";
 import HeaderHeroScreen from "../layouts/homeScreen/Header";
 import TodayRecentTasks from "../layouts/homeScreen/TodayRecentTasks";
 import { useStreak } from "../hooks/useStreak";
 import { useTaskManager } from "../hooks/useTaskManager";
-import { useState, useCallback } from "react";
-import { useFocusEffect } from "@react-navigation/native";
-import { WidgetPreview } from "react-native-android-widget";
-import { TaskWidgetAndroid } from "../widget/TaskWidget";
 import StartTimerList from "../layouts/homeScreen/StartTimerList";
-import { PrivacyStatus } from "../components/PrivacyStatus";
 import WeeklyFocusWidget from "../layouts/homeScreen/WeeklyFocusWidget";
 
 export default function HomeScreen() {
     const { tasks } = useTaskManager();
     const { currentStreak } = useStreak(tasks);
-
-    // Get today's recent task or any active task
-    const activeTasks = tasks.filter(t => !t.isCompleted);
-    const today = new Date();
-    const todayTasks = activeTasks.filter(task => {
-        if (!task.dueDate) return false;
-        const taskDate = new Date(task.dueDate);
-        return (
-            taskDate.getDate() === today.getDate() &&
-            taskDate.getMonth() === today.getMonth() &&
-            taskDate.getFullYear() === today.getFullYear()
-        );
-    });
-
-    // Pick the most relevant task
-    const recentTask = todayTasks.length > 0 ? todayTasks[0] : (activeTasks.length > 0 ? activeTasks[0] : null);
 
     return (
         <SafeAreaView

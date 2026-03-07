@@ -70,7 +70,7 @@ export function useStreak(tasks: any[]) {
         if (!parsed) {
           try {
             parsed = JSON.parse(raw) as StreakLog;
-          } catch (e) {
+          } catch {
             parsed = null;
           }
         }

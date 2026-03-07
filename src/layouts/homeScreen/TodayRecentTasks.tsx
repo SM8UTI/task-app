@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from "react";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import React, { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 import {
     Text,
     View,
@@ -24,7 +24,7 @@ import { useTaskManager } from "../../hooks/useTaskManager";
 
 function TodayRecentTasks() {
     const navigation = useNavigation<any>();
-    const { tasks, saveNewTask, toggleTaskComplete, deleteTask, advanceTaskStatus } = useTaskManager();
+    const { tasks, saveNewTask, deleteTask, advanceTaskStatus } = useTaskManager();
 
     const [selectedTask, setSelectedTask] = useState<any | null>(null);
     const [sheetVisible, setSheetVisible] = useState(false);
@@ -56,16 +56,7 @@ function TodayRecentTasks() {
         }
     };
 
-    const openTaskSheet = (task: any) => {
-        setSelectedTask(task);
-        setSheetVisible(true);
-        Animated.spring(slideAnim, {
-            toValue: 1,
-            useNativeDriver: true,
-            bounciness: 0,
-            speed: 14,
-        }).start();
-    };
+    // openTaskSheet removed since it's unused
 
     const closeTaskSheet = () => {
         Animated.timing(slideAnim, {

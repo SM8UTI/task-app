@@ -1,8 +1,8 @@
-import { View, Text, TextInput, ScrollView, Pressable, KeyboardAvoidingView, Platform, Linking, Image, Animated, PanResponder, Dimensions, TouchableOpacity } from "react-native";
+import { View, Text, TextInput, ScrollView, Pressable, KeyboardAvoidingView, Platform, Linking, Animated, PanResponder, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useRef } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Trash2, Plus, Brain, Sparkles, Play } from "lucide-react-native";
+import { Trash2, Plus, Brain, Sparkles } from "lucide-react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { encryptObject, decryptObject } from "../utils/security";
 import theme from "../data/color-theme";
@@ -40,7 +40,6 @@ const formatDate = (iso: string) => {
 export default function BrainDumpScreen() {
     const [entries, setEntries] = useState<DumpEntry[]>([]);
     const [input, setInput] = useState("");
-    const [pressingId, setPressingId] = useState<number | null>(null);
     const [activeTab, setActiveTab] = useState<"texts" | "links">("texts");
 
     const isLinkEntry = (text: string) => /(https?:\/\/[^\s]+)/g.test(text);
